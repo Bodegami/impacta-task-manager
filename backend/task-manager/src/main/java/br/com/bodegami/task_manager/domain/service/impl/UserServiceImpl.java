@@ -83,4 +83,13 @@ public class UserServiceImpl implements UserService {
         }
 
     }
+
+    @Override
+    public void delete(UUID id) {
+        try {
+            userRepository.deleteById(id);
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
 }
