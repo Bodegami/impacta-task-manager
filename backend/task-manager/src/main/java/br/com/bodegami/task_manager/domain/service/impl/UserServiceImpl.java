@@ -2,6 +2,7 @@ package br.com.bodegami.task_manager.domain.service.impl;
 
 import br.com.bodegami.task_manager.application.entrypoint.dto.*;
 import br.com.bodegami.task_manager.domain.entity.User;
+import br.com.bodegami.task_manager.domain.exception.DatabaseIntegrityViolation;
 import br.com.bodegami.task_manager.domain.exception.UserNotFoundException;
 import br.com.bodegami.task_manager.domain.service.UserService;
 import br.com.bodegami.task_manager.domain.mapper.UserMapper;
@@ -15,7 +16,8 @@ import java.util.UUID;
 @Service
 public class UserServiceImpl implements UserService {
 
-    public static final String USER_NOT_FOUND_ID = "User not found - ID: %s";
+    private static final String USER_NOT_FOUND_ID = "User not found - ID: %s";
+    private static final String EMAIL_ALREADY_EXISTS = "Email already exists";
     private final UserMapper userMapper;
     private final UserRepository userRepository;
 
@@ -29,6 +31,13 @@ public class UserServiceImpl implements UserService {
     public CreateUserResponseDTO create(CreateUserRequestDTO requestDTO) {
 
         try {
+
+            //TODO - Create a annotation to validate if the email already exists
+            userRepository.findByEmail(requestDTO.email())
+                    .ifPresent(user -> {
+                        throw new DatabaseIntegrityViolation(EMAIL_ALREADY_EXISTS);
+                    });
+
             User user = userMapper.toDomain(requestDTO);
 
             User userSaved = userRepository.save(user);
@@ -96,7 +105,11 @@ public class UserServiceImpl implements UserService {
     private RuntimeException handlerException(Exception ex) {
         if (ex instanceof UserNotFoundException) {
             return (UserNotFoundException) ex;
-        } else {
+        }
+        else if (ex instanceof DatabaseIntegrityViolation) {
+            return (DatabaseIntegrityViolation) ex;
+        }
+        else {
             return new RuntimeException(ex.getMessage());
         }
     }

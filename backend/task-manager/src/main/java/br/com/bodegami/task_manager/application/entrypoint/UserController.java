@@ -2,6 +2,7 @@ package br.com.bodegami.task_manager.application.entrypoint;
 
 import br.com.bodegami.task_manager.application.entrypoint.dto.*;
 import br.com.bodegami.task_manager.domain.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +20,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<CreateUserResponseDTO> create(@RequestBody CreateUserRequestDTO request) {
+    public ResponseEntity<CreateUserResponseDTO> create(@RequestBody @Valid CreateUserRequestDTO request) {
 
         CreateUserResponseDTO response = service.create(request);
 
@@ -44,7 +45,7 @@ public class UserController {
 
     @PutMapping("/{id}")
     public ResponseEntity<UserDetailsResponseDTO> update(@PathVariable UUID id,
-                                                         @RequestBody UpdateUserRequestDTO request) {
+                                                         @RequestBody @Valid UpdateUserRequestDTO request) {
 
         UserDetailsResponseDTO response = service.update(id, request);
 
