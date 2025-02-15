@@ -1,9 +1,6 @@
 package br.com.bodegami.task_manager.application.entrypoint;
 
-import br.com.bodegami.task_manager.application.entrypoint.dto.CreateUserRequestDTO;
-import br.com.bodegami.task_manager.application.entrypoint.dto.CreateUserResponseDTO;
-import br.com.bodegami.task_manager.application.entrypoint.dto.UserDetailsResponseDTO;
-import br.com.bodegami.task_manager.application.entrypoint.dto.UserResponseDTO;
+import br.com.bodegami.task_manager.application.entrypoint.dto.*;
 import br.com.bodegami.task_manager.domain.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -41,6 +38,15 @@ public class UserController {
     public ResponseEntity<UserDetailsResponseDTO> findById(@PathVariable UUID id) {
 
         UserDetailsResponseDTO response = service.findById(id);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<UserDetailsResponseDTO> update(@PathVariable UUID id,
+                                                         @RequestBody UpdateUserRequestDTO request) {
+
+        UserDetailsResponseDTO response = service.update(id, request);
 
         return ResponseEntity.ok(response);
     }

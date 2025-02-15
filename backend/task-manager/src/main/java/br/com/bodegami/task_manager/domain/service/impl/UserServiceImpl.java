@@ -1,14 +1,12 @@
 package br.com.bodegami.task_manager.domain.service.impl;
 
-import br.com.bodegami.task_manager.application.entrypoint.dto.CreateUserRequestDTO;
-import br.com.bodegami.task_manager.application.entrypoint.dto.CreateUserResponseDTO;
-import br.com.bodegami.task_manager.application.entrypoint.dto.UserDetailsResponseDTO;
-import br.com.bodegami.task_manager.application.entrypoint.dto.UserResponseDTO;
+import br.com.bodegami.task_manager.application.entrypoint.dto.*;
 import br.com.bodegami.task_manager.domain.entity.User;
 import br.com.bodegami.task_manager.domain.service.UserService;
 import br.com.bodegami.task_manager.domain.mapper.UserMapper;
 import br.com.bodegami.task_manager.infrastructure.repository.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -25,6 +23,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public CreateUserResponseDTO create(CreateUserRequestDTO requestDTO) {
 
         try {
@@ -39,6 +38,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<UserResponseDTO> findAll() {
 
         try {
@@ -52,6 +52,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public UserDetailsResponseDTO findById(UUID id) {
 
         try {
@@ -61,5 +62,25 @@ public class UserServiceImpl implements UserService {
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
+    }
+
+    @Override
+    @Transactional
+    public UserDetailsResponseDTO update(UUID id, UpdateUserRequestDTO request) {
+
+        try {
+            User user = userRepository.findById(id)
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+
+            user.setName(request.name());
+            user.setEmail(request.email());
+
+            User userUpdated = userRepository.save(user);
+
+            return userMapper.toUserDetailsResponse(userUpdated);
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
+
     }
 }
