@@ -1,13 +1,11 @@
 package br.com.bodegami.task_manager.domain.mapper;
 
-import br.com.bodegami.task_manager.application.entrypoint.dto.CreateUserRequestDTO;
-import br.com.bodegami.task_manager.application.entrypoint.dto.CreateUserResponseDTO;
-import br.com.bodegami.task_manager.application.entrypoint.dto.UserDetailsResponseDTO;
-import br.com.bodegami.task_manager.application.entrypoint.dto.UserResponseDTO;
+import br.com.bodegami.task_manager.application.entrypoint.dto.*;
 import br.com.bodegami.task_manager.domain.entity.User;
 import com.fasterxml.uuid.Generators;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring", imports = {Generators.class})
 public interface UserMapper {
@@ -21,6 +19,13 @@ public interface UserMapper {
     UserResponseDTO toUserResponse(User user);
 
     UserDetailsResponseDTO toUserDetailsResponse(User user);
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "password", ignore = true)
+    @Mapping(target = "user.email", source = "request.email")
+    @Mapping(target = "user.name", source = "request.name")
+    User toUpdateDomain(@MappingTarget User user, UpdateUserRequestDTO request);
 
 
 

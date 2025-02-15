@@ -2,6 +2,7 @@ package br.com.bodegami.task_manager.domain.service.impl;
 
 import br.com.bodegami.task_manager.application.entrypoint.dto.*;
 import br.com.bodegami.task_manager.domain.entity.User;
+import br.com.bodegami.task_manager.domain.exception.UserNotFoundException;
 import br.com.bodegami.task_manager.domain.service.UserService;
 import br.com.bodegami.task_manager.domain.mapper.UserMapper;
 import br.com.bodegami.task_manager.infrastructure.repository.UserRepository;
@@ -14,6 +15,7 @@ import java.util.UUID;
 @Service
 public class UserServiceImpl implements UserService {
 
+    public static final String USER_NOT_FOUND_ID = "User not found - ID: %s";
     private final UserMapper userMapper;
     private final UserRepository userRepository;
 
@@ -32,8 +34,8 @@ public class UserServiceImpl implements UserService {
             User userSaved = userRepository.save(user);
 
             return userMapper.toCreateResponse(userSaved);
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
+        } catch (Exception ex) {
+            throw handlerException(ex);
         }
     }
 
@@ -46,8 +48,8 @@ public class UserServiceImpl implements UserService {
                     .map(userMapper::toUserResponse)
                     .toList();
 
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
+        } catch (Exception ex) {
+            throw handlerException(ex);
         }
     }
 
@@ -58,9 +60,9 @@ public class UserServiceImpl implements UserService {
         try {
             return userRepository.findById(id)
                     .map(userMapper::toUserDetailsResponse)
-                    .orElseThrow(() -> new RuntimeException("User not found"));
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
+                    .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND_ID.formatted(id)));
+        } catch (Exception ex) {
+            throw handlerException(ex);
         }
     }
 
@@ -70,26 +72,32 @@ public class UserServiceImpl implements UserService {
 
         try {
             User user = userRepository.findById(id)
-                    .orElseThrow(() -> new RuntimeException("User not found"));
+                    .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND_ID.formatted(id)));
 
-            user.setName(request.name());
-            user.setEmail(request.email());
+            user = userMapper.toUpdateDomain(user, request);
 
             User userUpdated = userRepository.save(user);
 
             return userMapper.toUserDetailsResponse(userUpdated);
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
+        } catch (Exception ex) {
+            throw handlerException(ex);
         }
-
     }
 
     @Override
     public void delete(UUID id) {
         try {
             userRepository.deleteById(id);
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
+        } catch (Exception ex) {
+            throw handlerException(ex);
+        }
+    }
+
+    private RuntimeException handlerException(Exception ex) {
+        if (ex instanceof UserNotFoundException) {
+            return (UserNotFoundException) ex;
+        } else {
+            return new RuntimeException(ex.getMessage());
         }
     }
 }
