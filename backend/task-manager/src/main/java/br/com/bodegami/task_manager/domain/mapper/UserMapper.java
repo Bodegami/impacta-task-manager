@@ -1,7 +1,9 @@
-package br.com.bodegami.task_manager.mapper;
+package br.com.bodegami.task_manager.domain.mapper;
 
-import br.com.bodegami.task_manager.controller.dto.CreateUserRequestDTO;
-import br.com.bodegami.task_manager.controller.dto.CreateUserResponseDTO;
+import br.com.bodegami.task_manager.application.entrypoint.dto.CreateUserRequestDTO;
+import br.com.bodegami.task_manager.application.entrypoint.dto.CreateUserResponseDTO;
+import br.com.bodegami.task_manager.application.entrypoint.dto.UserDetailsResponseDTO;
+import br.com.bodegami.task_manager.application.entrypoint.dto.UserResponseDTO;
 import br.com.bodegami.task_manager.domain.entity.User;
 import com.fasterxml.uuid.Generators;
 import org.mapstruct.Mapper;
@@ -14,6 +16,12 @@ public interface UserMapper {
     @Mapping(target = "createdAt", expression = "java(java.time.LocalDateTime.now())")
     User toDomain(CreateUserRequestDTO request);
 
-    CreateUserResponseDTO toDTO(User user);
+    CreateUserResponseDTO toCreateResponse(User user);
+
+    UserResponseDTO toUserResponse(User user);
+
+    UserDetailsResponseDTO toUserDetailsResponse(User user);
+
+
 
 }

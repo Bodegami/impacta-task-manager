@@ -1,4 +1,4 @@
-package br.com.bodegami.task_manager.controller.dto;
+package br.com.bodegami.task_manager.application.entrypoint.dto;
 
 public record CreateUserRequestDTO(
         String name,
