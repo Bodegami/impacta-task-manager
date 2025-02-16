@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: task-manager
+  datasource:
+    url: jdbc:postgresql://localhost:5432/gestao_tarefas
+    username: root
+    password: root
+#    driver-class-name: org.postgresql.Driver
+#    testWhileIdle: true
+#    validationQuery: SELECT 1
+  # JPA
+  jpa:
+    open-in-view: false
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+#        dialect: org.hibernate.dialect.PostgreSQLDialect
+
