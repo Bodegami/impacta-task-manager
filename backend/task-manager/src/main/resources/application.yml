@@ -19,3 +19,12 @@ spring:
         format_sql: true
 #        dialect: org.hibernate.dialect.PostgreSQLDialect
 
+security:
+  jwt:
+    secret: '4Z^XrroxR@dWxqf$mTTKwW$!@#qGr4P'
+    expiration: 86400000
+    header: 'Authorization'
+    prefix: 'Bearer'
+    type: 'JWT'
+    issuer: "bodegami-api"
+    zone: 'America/Sao_Paulo'
