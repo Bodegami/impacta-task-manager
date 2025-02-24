@@ -22,6 +22,7 @@ export default function TaskListPage() {
     }}>
       <h1>Task List</h1>
       <p>Welcome to your task list. Here you will see all your tasks.</p>
+      <button onClick={() => navigate("/")}>Voltar para Home</button>
     </div>
   );
 }
