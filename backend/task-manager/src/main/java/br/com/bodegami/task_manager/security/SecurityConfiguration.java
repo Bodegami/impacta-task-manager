@@ -26,7 +26,8 @@ public class SecurityConfiguration {
 
     public static final String [] ENDPOINTS_WITH_AUTHENTICATION_NOT_REQUIRED = {
             "/login", // Url que usaremos para fazer login
-            "/users" // Url que usaremos para criar um usuário
+            "/users", // Url que usaremos para criar um usuário
+            "/tasks"
     };
 
     // Endpoints que requerem autenticação para serem acessados
@@ -58,7 +59,7 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable) // Desativa a proteção contra CSRF
                 .sessionManagement(AbstractHttpConfigurer::disable) // Desativa o controle de sessão
                 .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers("/users", "/login").permitAll()
+                        .requestMatchers("/users", "/login", "/tasks").permitAll()
                         .requestMatchers(HttpMethod.GET, "/users/*").hasAnyRole(ADMINISTRATOR, CUSTOMER)
                         .requestMatchers(HttpMethod.PUT, "/users/*").hasAnyRole(ADMINISTRATOR, CUSTOMER)
                         .requestMatchers(HttpMethod.DELETE, "/users/*").hasRole(ADMINISTRATOR)
