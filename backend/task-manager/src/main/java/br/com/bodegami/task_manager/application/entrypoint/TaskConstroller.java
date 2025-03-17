@@ -1,9 +1,6 @@
 package br.com.bodegami.task_manager.application.entrypoint;
 
-import br.com.bodegami.task_manager.application.entrypoint.dto.CreateTaskRequestDTO;
-import br.com.bodegami.task_manager.application.entrypoint.dto.CreateTaskResponseDTO;
-import br.com.bodegami.task_manager.application.entrypoint.dto.TaskDetailsResponse;
-import br.com.bodegami.task_manager.application.entrypoint.dto.TaskResponseDTO;
+import br.com.bodegami.task_manager.application.entrypoint.dto.*;
 import br.com.bodegami.task_manager.domain.service.TaskService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,6 +29,12 @@ public class TaskConstroller {
     @GetMapping("/{taskId}")
     public ResponseEntity<TaskDetailsResponse> findTaskById(@PathVariable UUID taskId) {
         TaskDetailsResponse response = service.findByTaskId(taskId);
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/{taskId}")
+    public ResponseEntity<TaskDetailsResponse> updateTaskById(@PathVariable UUID taskId, @RequestBody UpdateTaskRequestDTO request) {
+        TaskDetailsResponse response = service.updateTask(taskId, request);
         return ResponseEntity.ok(response);
     }
 

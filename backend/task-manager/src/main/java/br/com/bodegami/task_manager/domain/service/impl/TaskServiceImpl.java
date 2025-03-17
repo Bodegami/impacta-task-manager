@@ -1,14 +1,12 @@
 package br.com.bodegami.task_manager.domain.service.impl;
 
-import br.com.bodegami.task_manager.application.entrypoint.dto.CreateTaskRequestDTO;
-import br.com.bodegami.task_manager.application.entrypoint.dto.CreateTaskResponseDTO;
-import br.com.bodegami.task_manager.application.entrypoint.dto.TaskDetailsResponse;
-import br.com.bodegami.task_manager.application.entrypoint.dto.TaskResponseDTO;
+import br.com.bodegami.task_manager.application.entrypoint.dto.*;
 import br.com.bodegami.task_manager.domain.entity.Task;
 import br.com.bodegami.task_manager.domain.mapper.TaskMapper;
 import br.com.bodegami.task_manager.domain.service.TaskService;
 import br.com.bodegami.task_manager.infrastructure.repository.TaskRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -24,6 +22,7 @@ public class TaskServiceImpl implements TaskService {
         this.repository = repository;
     }
 
+    @Transactional
     public CreateTaskResponseDTO create(CreateTaskRequestDTO request) {
 
         Task entity = mapper.toDomain(request);
@@ -35,6 +34,7 @@ public class TaskServiceImpl implements TaskService {
         return response;
     }
 
+    @Transactional(readOnly = true)
     public List<TaskResponseDTO> findAllByUserId(UUID userId) {
 
         List<TaskResponseDTO> result = repository.findAllByUserId(userId)
@@ -45,6 +45,7 @@ public class TaskServiceImpl implements TaskService {
         return result;
     }
 
+    @Transactional(readOnly = true)
     public TaskDetailsResponse findByTaskId(UUID taskId) {
 
         TaskDetailsResponse result = repository.findById(taskId)
@@ -54,6 +55,20 @@ public class TaskServiceImpl implements TaskService {
         return result;
     }
 
+    @Transactional
+    public TaskDetailsResponse updateTask(UUID taskId, UpdateTaskRequestDTO request) {
+
+        Task task = repository.findById(taskId)
+                .orElseThrow(() -> new IllegalArgumentException("Task not found"));
+
+        mapper.toUpdateDomain(task, request);
+
+        TaskDetailsResponse response = mapper.toTaskDetailsResponse(task);
+
+        return response;
+    }
+
+    @Transactional
     public void deleteTaskById(UUID taskId) {
         repository.deleteById(taskId);
     }

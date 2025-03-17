@@ -62,7 +62,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers("/users", "/login", "/tasks", "/tasks/*").permitAll()
                         .requestMatchers(HttpMethod.GET, "/users/*", "/tasks/**").hasAnyRole(ADMINISTRATOR, CUSTOMER)
-                        .requestMatchers(HttpMethod.PUT, "/users/*").hasAnyRole(ADMINISTRATOR, CUSTOMER)
+                        .requestMatchers(HttpMethod.PUT, "/users/*", "/tasks/**").hasAnyRole(ADMINISTRATOR, CUSTOMER)
                         .requestMatchers(HttpMethod.DELETE, "/users/*").hasRole(ADMINISTRATOR)
                         .requestMatchers(HttpMethod.GET, "/users/test/customer").hasRole(CUSTOMER)
                         .requestMatchers(HttpMethod.DELETE, "/users/test/administrator").hasRole(ADMINISTRATOR)

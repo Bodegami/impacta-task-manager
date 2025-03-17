@@ -1,9 +1,6 @@
 package br.com.bodegami.task_manager.domain.service;
 
-import br.com.bodegami.task_manager.application.entrypoint.dto.CreateTaskRequestDTO;
-import br.com.bodegami.task_manager.application.entrypoint.dto.CreateTaskResponseDTO;
-import br.com.bodegami.task_manager.application.entrypoint.dto.TaskDetailsResponse;
-import br.com.bodegami.task_manager.application.entrypoint.dto.TaskResponseDTO;
+import br.com.bodegami.task_manager.application.entrypoint.dto.*;
 
 import java.util.List;
 import java.util.UUID;
@@ -16,4 +13,6 @@ public interface TaskService {
     TaskDetailsResponse findByTaskId(UUID userId);
 
     void deleteTaskById(UUID taskId);
+
+    TaskDetailsResponse updateTask(UUID taskId, UpdateTaskRequestDTO request);
 }
