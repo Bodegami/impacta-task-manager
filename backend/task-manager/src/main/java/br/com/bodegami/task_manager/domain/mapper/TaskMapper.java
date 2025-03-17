@@ -2,6 +2,8 @@ package br.com.bodegami.task_manager.domain.mapper;
 
 import br.com.bodegami.task_manager.application.entrypoint.dto.CreateTaskRequestDTO;
 import br.com.bodegami.task_manager.application.entrypoint.dto.CreateTaskResponseDTO;
+import br.com.bodegami.task_manager.application.entrypoint.dto.TaskDetailsResponse;
+import br.com.bodegami.task_manager.application.entrypoint.dto.TaskResponseDTO;
 import br.com.bodegami.task_manager.domain.entity.Task;
 import com.fasterxml.uuid.Generators;
 import org.mapstruct.Mapper;
@@ -24,6 +26,11 @@ public interface TaskMapper {
     @Mapping(source = "user.id", target = "userId")
     CreateTaskResponseDTO toCreateResponse(Task task);
 
+    TaskResponseDTO toFindAllResponse(Task task);
+
+    @Mapping(source = "user.id", target = "userId")
+    TaskDetailsResponse toTaskDetailsResponse(Task task);
+
     @Named("parseDueDate")
     default LocalDateTime parseDueDate(String dueDate) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
@@ -33,4 +40,5 @@ public interface TaskMapper {
             throw new IllegalArgumentException("Invalid date format: " + dueDate);
         }
     }
+
 }
