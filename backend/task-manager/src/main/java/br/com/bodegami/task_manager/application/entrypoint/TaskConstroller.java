@@ -30,13 +30,19 @@ public class TaskConstroller {
     }
 
     @GetMapping("/{taskId}")
-    public ResponseEntity<TaskDetailsResponse> findByTaskId(@PathVariable UUID taskId) {
+    public ResponseEntity<TaskDetailsResponse> findTaskById(@PathVariable UUID taskId) {
         TaskDetailsResponse response = service.findByTaskId(taskId);
         return ResponseEntity.ok(response);
     }
 
+    @DeleteMapping("/{taskId}")
+    public ResponseEntity<Void> deleteTaskById(@PathVariable UUID taskId) {
+        service.deleteTaskById(taskId);
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<TaskResponseDTO>> findAll(@PathVariable UUID userId) {
+    public ResponseEntity<List<TaskResponseDTO>> findAllTaskByUserId(@PathVariable UUID userId) {
         List<TaskResponseDTO> response = service.findAllByUserId(userId);
         return ResponseEntity.ok(response);
     }

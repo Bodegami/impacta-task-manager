@@ -14,4 +14,6 @@ public interface TaskService {
     List<TaskResponseDTO> findAllByUserId(UUID userId);
 
     TaskDetailsResponse findByTaskId(UUID userId);
+
+    void deleteTaskById(UUID taskId);
 }

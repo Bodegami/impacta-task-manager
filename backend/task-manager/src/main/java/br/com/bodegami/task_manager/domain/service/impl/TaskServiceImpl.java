@@ -53,4 +53,8 @@ public class TaskServiceImpl implements TaskService {
 
         return result;
     }
+
+    public void deleteTaskById(UUID taskId) {
+        repository.deleteById(taskId);
+    }
 }
