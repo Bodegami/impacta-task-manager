@@ -13,8 +13,9 @@ import java.time.ZonedDateTime;
 @Service
 public class JwtTokenService {
 
-    private static final String TOKEN_INVALIDO_OU_EXPIRADO = "Token inválido ou expirado.";
     private static final String ERRO_AO_GERAR_TOKEN = "Erro ao gerar token.";
+    private static final String TOKEN_INVALIDO_OU_EXPIRADO = "Token inválido ou expirado.";
+    private static final String USER_ID = "user_id";
 
     private final JwtProperties jwtProperties;
 
@@ -27,11 +28,12 @@ public class JwtTokenService {
             // Define o algoritmo HMAC SHA256 para criar a assinatura do token passando a chave secreta definida
             Algorithm algorithm = Algorithm.HMAC256(jwtProperties.getSecret());
             return JWT.create()
-                    .withIssuer(jwtProperties.getIssuer()) // Define o emissor do token
+                    .withIssuer(jwtProperties.getIssuer())
+                    .withClaim(USER_ID, user.getUser().getId().toString())// Define o emissor do token
                     .withIssuedAt(creationDate()) // Define a data de emissão do token
                     .withExpiresAt(expirationDate()) // Define a data de expiração do token
-                    .withSubject(user.getUser().getId().toString()) // Define o assunto do token (neste caso, o nome de usuário)
-                    .sign(algorithm); // Assina o token usando o algoritmo especificado
+                    .withSubject(user.getUsername()) // Define o assunto do token (neste caso, o nome de usuário)
+                    .sign(algorithm);// Assina o token usando o algoritmo especificado
         } catch (JWTCreationException exception){
             throw new JWTCreationException(ERRO_AO_GERAR_TOKEN, exception);
         }
