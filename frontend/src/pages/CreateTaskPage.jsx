@@ -30,9 +30,7 @@ export default function CreateTaskPage() {
     const taskData = {
       title,
       description,
-      dueDate: formatDueDate(dueDate),
-      status: "PENDENTE",
-      userId: "0195a156-2402-782e-94d2-e4fb1c3267e3"
+      dueDate: formatDueDate(dueDate)
     };
 
     try {
