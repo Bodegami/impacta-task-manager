@@ -58,6 +58,22 @@ export default function TaskListPage() {
           Bem-vindo(a) à sua lista de tarefas. Aqui você verá todas as suas tarefas.
         </p>
         <button 
+            onClick={() => navigate("/tasks/create")}
+            style={{ 
+              padding: "10px 20px", 
+              borderRadius: "5px", 
+              border: "none", 
+              backgroundColor: "#3498db", 
+              color: "white", 
+              cursor: "pointer",
+              transition: "background-color 0.3s"
+            }}
+            onMouseOver={(e) => e.target.style.backgroundColor = "#2980b9"}
+            onMouseOut={(e) => e.target.style.backgroundColor = "#3498db"}
+          >
+            Criar Tarefa
+        </button>
+        <button 
           onClick={() => navigate("/")} 
           style={{ 
             padding: "10px 20px", 

@@ -6,6 +6,7 @@ import LoginPage from "./pages/LoginPage";
 import HomePage from "./pages/HomePage";
 import SignupPage from "./pages/SignupPage";
 import TaskListPage from "./pages/TaskListPage";
+import CreateTaskPage from "./pages/CreateTaskPage";
 
 export default function App() {
   const [user, setUser] = useState(null);
@@ -17,6 +18,7 @@ export default function App() {
         <Route path="/login" element={<LoginPage setUser={setUser} />} />
         <Route path="/signup" element={<SignupPage setUser={setUser} />} />
         <Route path="/tasks" element={<TaskListPage setUser={setUser} />} />
+        <Route path="/tasks/create" element={<CreateTaskPage setUser={setUser} />} />
         {/* <Route path="/dashboard" element={user ? <Dashboard user={user} /> : <LoginPage setUser={setUser} />} /> */}
         {/* <Route path="*" element={<NotFound />} /> */}
       </Routes>
