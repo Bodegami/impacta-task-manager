@@ -2,6 +2,8 @@ package br.com.bodegami.task_manager.application.entrypoint;
 
 import br.com.bodegami.task_manager.application.entrypoint.dto.*;
 import br.com.bodegami.task_manager.domain.service.TaskService;
+import br.com.bodegami.task_manager.domain.service.UserService;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,15 +15,19 @@ import java.util.UUID;
 public class TaskConstroller {
 
     private final TaskService service;
+    private final UserService userService;
 
-    public TaskConstroller(TaskService service) {
+    public TaskConstroller(TaskService service, UserService userService) {
         this.service = service;
+        this.userService = userService;
     }
 
     @PostMapping
-    public ResponseEntity<CreateTaskResponseDTO> create(@RequestBody CreateTaskRequestDTO request) {
+    public ResponseEntity<CreateTaskResponseDTO> create(@RequestHeader HttpHeaders httpHeaders,
+                                                        @RequestBody CreateTaskRequestDTO request) {
 
-        CreateTaskResponseDTO response = service.create(request);
+        String userId = userService.getUserIdFromToken(httpHeaders);
+        CreateTaskResponseDTO response = service.create(request, userId);
 
         return ResponseEntity.ok(response);
     }

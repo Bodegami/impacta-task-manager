@@ -37,14 +37,15 @@ public class User {
             inverseJoinColumns = @JoinColumn(name="role_id"))
     private List<Role> roles;
 
-//    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-//    private List<Task> tasks;
-
     public void setName(String name) {
         this.name = name;
     }
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public void setId(String userId) {
+        this.id = UUID.fromString(userId);
     }
 }

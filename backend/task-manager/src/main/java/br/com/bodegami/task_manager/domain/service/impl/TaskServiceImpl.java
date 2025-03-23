@@ -23,9 +23,9 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Transactional
-    public CreateTaskResponseDTO create(CreateTaskRequestDTO request) {
+    public CreateTaskResponseDTO create(CreateTaskRequestDTO request, String userId) {
 
-        Task entity = mapper.toDomain(request);
+        Task entity = mapper.toDomain(request, userId);
 
         Task result = repository.save(entity);
 

@@ -17,9 +17,9 @@ public interface TaskMapper {
 
     @Mapping(target = "id", expression = "java(Generators.timeBasedEpochGenerator().generate())")
     @Mapping(target = "createdAt", expression = "java(java.time.LocalDateTime.now())")
-    @Mapping(target = "dueDate", source = "dueDate", qualifiedByName = "parseDueDate")
-    @Mapping(source = "userId", target = "user.id")
-    Task toDomain(CreateTaskRequestDTO request);
+    @Mapping(target = "dueDate", source = "request.dueDate", qualifiedByName = "parseDueDate")
+    @Mapping(target = "user.id", source = "userIdFromToken")
+    Task toDomain(CreateTaskRequestDTO request, String userIdFromToken);
 
     @Mapping(source = "user.id", target = "userId")
     CreateTaskResponseDTO toCreateResponse(Task task);

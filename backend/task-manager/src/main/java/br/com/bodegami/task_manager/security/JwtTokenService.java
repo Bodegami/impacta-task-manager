@@ -61,4 +61,25 @@ public class JwtTokenService {
         return ZonedDateTime.now(ZoneId.of(jwtProperties.getZone())).plusHours(jwtProperties.getExpiration()).toInstant();
     }
 
+    public String getUserIdFromToken(String token) {
+        try {
+
+            if (token == null || token.isBlank()) {
+                throw new IllegalArgumentException("Token is null or empty");
+            }
+
+            Algorithm algorithm = Algorithm.HMAC256(jwtProperties.getSecret());
+            String result = token.split("Bearer ")[1];
+
+            return JWT.require(algorithm)
+                    .withIssuer(jwtProperties.getIssuer()) // Define o emissor do token
+                    .build()
+                    .verify(result) // Verifica a validade do token
+                    .getClaim(USER_ID).asString(); // Obtém o ID do usuário do token
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException(e);
+        } catch (JWTVerificationException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

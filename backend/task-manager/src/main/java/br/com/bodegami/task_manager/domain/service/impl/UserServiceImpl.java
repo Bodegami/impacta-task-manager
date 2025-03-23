@@ -8,6 +8,7 @@ import br.com.bodegami.task_manager.domain.service.UserService;
 import br.com.bodegami.task_manager.domain.mapper.UserMapper;
 import br.com.bodegami.task_manager.infrastructure.repository.UserRepository;
 import br.com.bodegami.task_manager.security.*;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -52,6 +53,15 @@ public class UserServiceImpl implements UserService {
 
         // Gera um token JWT para o usuário autenticado
         return new RecoveryJwtTokenDTO(jwtTokenService.generateToken(userDetails));
+    }
+
+    public String getUserIdFromToken(HttpHeaders httpHeaders) {
+        if (httpHeaders.containsKey(HttpHeaders.AUTHORIZATION)) {
+            String token = httpHeaders.getFirst(HttpHeaders.AUTHORIZATION);
+            return jwtTokenService.getUserIdFromToken(token);
+        }
+        
+        throw new RuntimeException("Token with invalid user_id");
     }
 
     @Override

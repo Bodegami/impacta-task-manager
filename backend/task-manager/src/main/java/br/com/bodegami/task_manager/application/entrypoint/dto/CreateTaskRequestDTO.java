@@ -4,7 +4,6 @@ public record CreateTaskRequestDTO(
         String title,
         String description,
         String status,
-        String dueDate,
-        String userId
+        String dueDate
 ) {
 }

@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface TaskService {
-    CreateTaskResponseDTO create(CreateTaskRequestDTO request);
+    CreateTaskResponseDTO create(CreateTaskRequestDTO request, String userId);
 
     List<TaskResponseDTO> findAllByUserId(UUID userId);
 
