@@ -50,9 +50,11 @@ public class TaskConstroller {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<List<TaskResponseDTO>> findAllTaskByUserId(@PathVariable UUID userId) {
-        List<TaskResponseDTO> response = service.findAllByUserId(userId);
+    @GetMapping("/user/tasks")
+    public ResponseEntity<List<TaskResponseDTO>> findAllTaskByUserId(@RequestHeader HttpHeaders httpHeaders) {
+        String userId = userService.getUserIdFromToken(httpHeaders);
+
+        List<TaskResponseDTO> response = service.findAllByUserId(UUID.fromString(userId));
         return ResponseEntity.ok(response);
     }
 
