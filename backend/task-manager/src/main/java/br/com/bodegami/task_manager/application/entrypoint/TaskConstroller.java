@@ -50,7 +50,7 @@ public class TaskConstroller {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/user/tasks")
+    @GetMapping
     public ResponseEntity<List<TaskResponseDTO>> findAllTaskByUserId(@RequestHeader HttpHeaders httpHeaders) {
         String userId = userService.getUserIdFromToken(httpHeaders);
 
