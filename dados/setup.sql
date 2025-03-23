@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS tasks (
     user_id UUID NOT NULL,
     title VARCHAR(255) NOT NULL,
     description TEXT,
-    status VARCHAR(20) CHECK (status IN ('PENDENTE', 'EM_ANDAMENTO', 'CONCLUIDO')) DEFAULT 'PENDENTE',
+    status VARCHAR(20) CHECK (status IN ('BACKLOG', 'TO_DO', 'IN_PROGRESS', 'DONE')) DEFAULT 'BACKLOG',
     due_date DATE,
     created_at TIMESTAMP DEFAULT NOW(),
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
