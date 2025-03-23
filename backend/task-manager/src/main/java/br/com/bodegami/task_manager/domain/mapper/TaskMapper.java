@@ -15,10 +15,13 @@ import java.time.format.DateTimeParseException;
 @Mapper(componentModel = "spring", imports = {Generators.class})
 public interface TaskMapper {
 
+    String BACKLOG = "BACKLOG";
+
     @Mapping(target = "id", expression = "java(Generators.timeBasedEpochGenerator().generate())")
     @Mapping(target = "createdAt", expression = "java(java.time.LocalDateTime.now())")
     @Mapping(target = "dueDate", source = "request.dueDate", qualifiedByName = "parseDueDate")
     @Mapping(target = "user.id", source = "userIdFromToken")
+    @Mapping(target = "status", constant = BACKLOG)
     Task toDomain(CreateTaskRequestDTO request, String userIdFromToken);
 
     @Mapping(source = "user.id", target = "userId")
