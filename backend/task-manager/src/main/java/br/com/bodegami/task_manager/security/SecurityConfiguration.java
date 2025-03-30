@@ -31,28 +31,6 @@ public class SecurityConfiguration {
             "/tasks/*"
     };
 
-    // Endpoints que requerem autenticação para serem acessados
-    public static final String [] ENDPOINTS_WITH_AUTHENTICATION_REQUIRED = {
-            "/users",
-            "/users/*",
-            "/users/test" // Endpoint que usaremos para testar se o usuário está autenticado
-    };
-
-    // Endpoints que só podem ser acessador por usuários com permissão de cliente
-    public static final String [] ENDPOINTS_CUSTOMER = {
-            "/users",
-            "/users/*",
-            "/users/test/customer"
-    };
-
-    // Endpoints que só podem ser acessador por usuários com permissão de administrador
-    public static final String [] ENDPOINTS_ADMIN = {
-            "/users",
-            "/users/",
-            "/users/*",
-            "/users/test/administrator"
-    };
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 
@@ -61,12 +39,12 @@ public class SecurityConfiguration {
                 .sessionManagement(AbstractHttpConfigurer::disable) // Desativa o controle de sessão
                 .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers("/users", "/login", "/tasks", "/tasks/*").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/users/*", "/tasks/**").hasAnyRole(ADMINISTRATOR, CUSTOMER)
-                        .requestMatchers(HttpMethod.PUT, "/users/*", "/tasks/**").hasAnyRole(ADMINISTRATOR, CUSTOMER)
-                        .requestMatchers(HttpMethod.DELETE, "/users/*").hasRole(ADMINISTRATOR)
+                        .requestMatchers(HttpMethod.GET, "/users/*", "/tasks/*", "/tasks/**").hasAnyRole(ADMINISTRATOR, CUSTOMER)
+                        .requestMatchers(HttpMethod.PUT, "/users/*", "/tasks/*", "/tasks/**").hasAnyRole(ADMINISTRATOR, CUSTOMER)
+                        .requestMatchers(HttpMethod.DELETE, "/users/*", "/tasks/**").hasRole(ADMINISTRATOR)
                         .requestMatchers(HttpMethod.GET, "/users/test/customer").hasRole(CUSTOMER)
                         .requestMatchers(HttpMethod.DELETE, "/users/test/administrator").hasRole(ADMINISTRATOR)
-                    .anyRequest().denyAll())
+                        .anyRequest().denyAll())
                 .addFilterBefore(userAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
