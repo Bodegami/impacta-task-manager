@@ -14,9 +14,9 @@ public interface TaskRepository extends JpaRepository<Task, UUID> {
 
     List<Task> findAllByUserId(UUID userId);
 
-    Optional<List<Task>> findAllByUserIdAndTitle(UUID userId, String titulo);
+    Optional<List<Task>> findAllByUserIdAndTitleIgnoreCase(UUID userId, String titulo);
 
-    Optional<List<Task>> findAllByUserIdAndStatus(UUID userId, String status);
+    Optional<List<Task>> findAllByUserIdAndStatusIgnoreCase(UUID userId, String status);
 
-    Optional<List<Task>> findAllByUserIdAndDescriptionContaining(UUID userId, String descricao);
+    Optional<List<Task>> findAllByUserIdAndDescriptionContainingIgnoreCase(UUID userId, String descricao);
 }
