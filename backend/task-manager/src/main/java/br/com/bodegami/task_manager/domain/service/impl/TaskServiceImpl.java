@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -68,8 +70,50 @@ public class TaskServiceImpl implements TaskService {
         return response;
     }
 
+    @Transactional(readOnly = true)
+    public List<TaskResponseDTO> findAllByParams(String userId, Map<String, String> params) {
+
+        UUID userUuid = UUID.fromString(userId);
+        String paramKey = params.keySet().iterator().next();
+        String paramValue = params.get(paramKey);
+
+        return searchByParam(userId, paramKey, paramValue, userUuid);
+    }
+
     @Transactional
     public void deleteTaskById(UUID taskId) {
         repository.deleteById(taskId);
+    }
+
+    private List<TaskResponseDTO> searchByParam(String userId, String paramKey, String paramValue, UUID userUuid) {
+        switch (paramKey) {
+            case "taskId" -> {
+                return repository.findById(UUID.fromString(paramValue))
+                        .map(task -> List.of(mapper.toFindAllResponse(task)))
+                        .orElseGet(List::of);
+            }
+            case "titulo" -> {
+                Optional<List<Task>> optionalTasks = repository.findAllByUserIdAndTitle(userUuid, paramValue);
+                return toListResponseDto(optionalTasks);
+            }
+            case "status" -> {
+                Optional<List<Task>> optionalTasks = repository.findAllByUserIdAndStatus(userUuid, paramValue);
+                return toListResponseDto(optionalTasks);
+            }
+            case "descricao" -> {
+                Optional<List<Task>> optionalTasks = repository.findAllByUserIdAndDescriptionContaining(userUuid, paramValue);
+                return toListResponseDto(optionalTasks);
+            }
+            default -> {
+                return findAllByUserId(UUID.fromString(userId));
+            }
+        }
+    }
+
+    private List<TaskResponseDTO> toListResponseDto(Optional<List<Task>> tasks) {
+        return tasks.map(taskList -> taskList.stream()
+                .map(mapper::toFindAllResponse)
+                .toList())
+        .orElse(List.of());
     }
 }

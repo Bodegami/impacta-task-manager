@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -37,6 +38,17 @@ public class TaskConstroller {
     public ResponseEntity<TaskDetailsResponse> findTaskById(@PathVariable UUID taskId) {
         TaskDetailsResponse response = service.findByTaskId(taskId);
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<TaskResponseDTO>> findAllByParam(@RequestHeader HttpHeaders httpHeaders,
+                                               @RequestParam(required = false) Map<String,String> params) {
+
+        String userId = userService.getUserIdFromToken(httpHeaders);
+
+        List<TaskResponseDTO> result = service.findAllByParams(userId, params);
+
+        return ResponseEntity.ok(result);
     }
 
     @PutMapping("/{taskId}")
