@@ -101,7 +101,8 @@ public class TaskServiceImpl implements TaskService {
                 TaskSearchParam.DESCRIPTION, value -> toListResponseDto(repository.findAllByUserIdAndDescriptionContainingIgnoreCase(userUuid, value))
         );
 
-        return filterMap.getOrDefault(searchParam, key -> List.of())
+        return filterMap
+                .getOrDefault(searchParam, key -> List.of())
                 .apply(paramValue);
     }
 
