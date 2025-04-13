@@ -194,18 +194,21 @@ export default function TaskListPage() {
           >
             {tasks.length > 0 ? (
               tasks.map((task) => (
-                <TaskCard
-                  key={task.id}
-                  task={task}
-                  isExpanded={expandedTaskId === task.id}
-                  selectedTaskDetails={selectedTaskDetails}
-                  loadingDetails={loadingDetails}
-                  detailsError={detailsError}
-                  updatingStatus={updatingStatus}
-                  updateStatusError={updateStatusError}
-                  toggleExpand={toggleExpand}
-                  handleStatusChange={handleStatusChange}
-                />
+              <TaskCard
+                key={task.id}
+                task={task}
+                isExpanded={expandedTaskId === task.id}
+                selectedTaskDetails={selectedTaskDetails}
+                loadingDetails={loadingDetails}
+                detailsError={detailsError}
+                updatingStatus={updatingStatus}
+                updateStatusError={updateStatusError}
+                toggleExpand={toggleExpand}
+                handleStatusChange={handleStatusChange}
+                onDelete={(deletedId) =>
+                  setTasks((prev) => prev.filter((t) => t.id !== deletedId))
+                }
+              />
               ))
             ) : (
               <p>Nenhuma tarefa encontrada.</p>
