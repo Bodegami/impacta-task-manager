@@ -1,6 +1,7 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { formatarDataHora } from "../utils/dateUtils";
-import { FaTrash } from "react-icons/fa"; // Ícone de lixeira
+import { FaTrash, FaEdit } from "react-icons/fa"; // Ícones de lixeira e edição
 import { deleteTask } from "../services/taskService";
 
 const TaskCard = ({
@@ -13,18 +14,25 @@ const TaskCard = ({
   updateStatusError,
   toggleExpand,
   handleStatusChange,
-  onDelete, // <-- nova prop para atualizar a lista após exclusão
+  onDelete,
 }) => {
+  const navigate = useNavigate();
+
   const handleDelete = async (e) => {
-    e.stopPropagation(); // Impede que o clique feche o card
+    e.stopPropagation();
     if (window.confirm("Tem certeza que deseja excluir esta tarefa?")) {
       try {
         await deleteTask(task.id);
-        onDelete(task.id); // Atualiza a lista de tarefas
+        onDelete(task.id);
       } catch (error) {
         alert("Erro ao excluir a tarefa.");
       }
     }
+  };
+
+  const handleEdit = (e) => {
+    e.stopPropagation();
+    navigate(`/tasks/edit/${task.id}`);
   };
 
   return (
@@ -60,22 +68,44 @@ const TaskCard = ({
       }}
     >
       {isExpanded && (
-        <button
-          onClick={handleDelete}
-          style={{
-            position: "absolute",
-            top: "10px",
-            right: "10px",
-            background: "transparent",
-            border: "none",
-            cursor: "pointer",
-            color: "#c0392b",
-            fontSize: "1.2rem",
-          }}
-          title="Excluir Tarefa"
-        >
-          <FaTrash />
-        </button>
+        <>
+          {/* Botão Editar */}
+          <button
+            onClick={handleEdit}
+            style={{
+              position: "absolute",
+              top: "10px",
+              right: "45px",
+              background: "transparent",
+              border: "none",
+              cursor: "pointer",
+              color: "#2980b9",
+              fontSize: "1.2rem",
+              marginRight: "5px",
+            }}
+            title="Editar Tarefa"
+          >
+            <FaEdit />
+          </button>
+
+          {/* Botão Excluir */}
+          <button
+            onClick={handleDelete}
+            style={{
+              position: "absolute",
+              top: "10px",
+              right: "10px",
+              background: "transparent",
+              border: "none",
+              cursor: "pointer",
+              color: "#c0392b",
+              fontSize: "1.2rem",
+            }}
+            title="Excluir Tarefa"
+          >
+            <FaTrash />
+          </button>
+        </>
       )}
 
       <h3 style={{ marginBottom: "10px", color: "#333" }}>
