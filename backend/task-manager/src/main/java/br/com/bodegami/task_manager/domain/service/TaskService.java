@@ -3,6 +3,7 @@ package br.com.bodegami.task_manager.domain.service;
 import br.com.bodegami.task_manager.application.entrypoint.dto.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public interface TaskService {
@@ -15,4 +16,6 @@ public interface TaskService {
     void deleteTaskById(UUID taskId);
 
     TaskDetailsResponse updateTask(UUID taskId, UpdateTaskRequestDTO request);
+
+    List<TaskResponseDTO> findAllByParams(String userId, Map<String, String> params);
 }

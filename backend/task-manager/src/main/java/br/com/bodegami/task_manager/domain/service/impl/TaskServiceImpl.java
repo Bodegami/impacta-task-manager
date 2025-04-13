@@ -2,14 +2,15 @@ package br.com.bodegami.task_manager.domain.service.impl;
 
 import br.com.bodegami.task_manager.application.entrypoint.dto.*;
 import br.com.bodegami.task_manager.domain.entity.Task;
+import br.com.bodegami.task_manager.domain.entity.TaskSearchParam;
 import br.com.bodegami.task_manager.domain.mapper.TaskMapper;
 import br.com.bodegami.task_manager.domain.service.TaskService;
 import br.com.bodegami.task_manager.infrastructure.repository.TaskRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+import java.util.function.Function;
 
 @Service
 public class TaskServiceImpl implements TaskService {
@@ -68,8 +69,73 @@ public class TaskServiceImpl implements TaskService {
         return response;
     }
 
+    @Transactional(readOnly = true)
+    public List<TaskResponseDTO> findAllByParams(String userId, Map<String, String> params) {
+
+        UUID userUuid = UUID.fromString(userId);
+
+        return searchByParam(userUuid, params);
+    }
+
     @Transactional
     public void deleteTaskById(UUID taskId) {
         repository.deleteById(taskId);
     }
+
+    private List<TaskResponseDTO> searchByParam(UUID userUuid, Map<String, String> params) {
+        if (params == null || params.isEmpty()) {
+            return findAllByUserId(userUuid);
+        }
+
+        String paramKey = params.keySet().iterator().next();
+        String paramValue = params.get(paramKey);
+
+        TaskSearchParam searchParam = TaskSearchParam.fromKey(paramKey);
+
+        return switch (searchParam) {
+            case TASK_ID -> repository.findById(UUID.fromString(paramValue))
+                    .map(task -> List.of(mapper.toFindAllResponse(task)))
+                    .orElseGet(List::of);
+            case TITLE -> toListResponseDto(repository.findAllByUserIdAndTitleIgnoreCase(userUuid, paramValue));
+            case STATUS -> toListResponseDto(repository.findAllByUserIdAndStatusIgnoreCase(userUuid, paramValue));
+            case DESCRIPTION -> toListResponseDto(repository.findAllByUserIdAndDescriptionContainingIgnoreCase(userUuid, paramValue));
+            default -> List.of();
+        };
+    }
+
+    private List<TaskResponseDTO> toListResponseDto(List<Task> tasks) {
+        return tasks.stream()
+                .map(mapper::toFindAllResponse)
+                .toList();
+    }
+
+    /**
+     *     UTILIZANDO FUNCTION
+     *
+     *     private List<TaskResponseDTO> searchByParam(UUID userUuid, Map<String, String> params) {
+     *         if (params == null || params.isEmpty()) {
+     *             return findAllByUserId(userUuid);
+     *         }
+     *
+     *         String paramKey = params.keySet().iterator().next();
+     *         String paramValue = params.get(paramKey).toUpperCase(Locale.ROOT);
+     *
+     *         TaskSearchParam searchParam = TaskSearchParam.fromKey(paramKey);
+     *
+     *         Map<TaskSearchParam, Function<String, List<TaskResponseDTO>>> filterMap = Map.of(
+     *                 TaskSearchParam.TASK_ID, value -> repository.findById(UUID.fromString(value))
+     *                         .map(task -> List.of(mapper.toFindAllResponse(task)))
+     *                         .orElseGet(List::of),
+     *                 TaskSearchParam.TITLE, value -> toListResponseDto(repository.findAllByUserIdAndTitleIgnoreCase(userUuid, value)),
+     *                 TaskSearchParam.STATUS, value -> toListResponseDto(repository.findAllByUserIdAndStatusIgnoreCase(userUuid, value)),
+     *                 TaskSearchParam.DESCRIPTION, value -> toListResponseDto(repository.findAllByUserIdAndDescriptionContainingIgnoreCase(userUuid, value))
+     *         );
+     *
+     *         return filterMap
+     *                 .getOrDefault(searchParam, key -> List.of())
+     *                 .apply(paramValue);
+     *     }
+     *
+     */
+
 }
