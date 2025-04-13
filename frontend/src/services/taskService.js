@@ -76,3 +76,28 @@ export async function updateTask(taskId, taskData) {
       throw error;
     }
 }
+
+export async function deleteTask(taskId) {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    throw new Error("Usuário não autenticado!");
+  }
+
+  try {
+    const response = await fetch(`http://127.0.0.1:8080/tasks/${taskId}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Erro ao excluir a tarefa.");
+    }
+
+    return true; // Ou qualquer resposta útil do backend
+  } catch (error) {
+    console.error("Erro ao excluir tarefa:", error);
+    throw error;
+  }
+}

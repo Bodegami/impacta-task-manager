@@ -1,5 +1,7 @@
 import React from "react";
 import { formatarDataHora } from "../utils/dateUtils";
+import { FaTrash } from "react-icons/fa"; // Ícone de lixeira
+import { deleteTask } from "../services/taskService";
 
 const TaskCard = ({
   task,
@@ -11,12 +13,24 @@ const TaskCard = ({
   updateStatusError,
   toggleExpand,
   handleStatusChange,
+  onDelete, // <-- nova prop para atualizar a lista após exclusão
 }) => {
+  const handleDelete = async (e) => {
+    e.stopPropagation(); // Impede que o clique feche o card
+    if (window.confirm("Tem certeza que deseja excluir esta tarefa?")) {
+      try {
+        await deleteTask(task.id);
+        onDelete(task.id); // Atualiza a lista de tarefas
+      } catch (error) {
+        alert("Erro ao excluir a tarefa.");
+      }
+    }
+  };
+
   return (
     <div
       key={task.id}
       onClick={(e) => {
-        // Evita que o clique em elementos interativos (como select) minimize o card
         if (e.target.tagName === "SELECT" || e.target.tagName === "OPTION") {
           e.stopPropagation();
           return;
@@ -45,7 +59,28 @@ const TaskCard = ({
         paddingBottom: isExpanded ? "20px" : "30px",
       }}
     >
-      <h3 style={{ marginBottom: "10px", color: "#333" }}>{task.title.toUpperCase()}</h3>
+      {isExpanded && (
+        <button
+          onClick={handleDelete}
+          style={{
+            position: "absolute",
+            top: "10px",
+            right: "10px",
+            background: "transparent",
+            border: "none",
+            cursor: "pointer",
+            color: "#c0392b",
+            fontSize: "1.2rem",
+          }}
+          title="Excluir Tarefa"
+        >
+          <FaTrash />
+        </button>
+      )}
+
+      <h3 style={{ marginBottom: "10px", color: "#333" }}>
+        {task.title.toUpperCase()}
+      </h3>
       <p style={{ fontSize: "0.9rem", color: "#666" }}>ID: {task.id}</p>
       <p
         style={{
@@ -76,7 +111,8 @@ const TaskCard = ({
           ) : selectedTaskDetails ? (
             <>
               <p>
-                <strong>Descrição:</strong> {selectedTaskDetails.description || "N/A"}
+                <strong>Descrição:</strong>{" "}
+                {selectedTaskDetails.description || "N/A"}
               </p>
               <p>
                 <strong>Data de Criação:</strong>{" "}
@@ -91,7 +127,8 @@ const TaskCard = ({
                   : "N/A"}
               </p>
               <p>
-                <strong>Prioridade:</strong> {selectedTaskDetails.priority || "Normal"}
+                <strong>Prioridade:</strong>{" "}
+                {selectedTaskDetails.priority || "Normal"}
               </p>
 
               <div>
@@ -99,7 +136,7 @@ const TaskCard = ({
                 <select
                   value={selectedTaskDetails.status}
                   onChange={(e) => {
-                    e.stopPropagation(); // Evita que o clique no select minimize o card
+                    e.stopPropagation();
                     handleStatusChange(
                       task.id,
                       task.title,
