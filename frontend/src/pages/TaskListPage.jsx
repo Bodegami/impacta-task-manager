@@ -1,6 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { fetchTasksFromBackend, fetchTaskDetails, updateTask } from "../services/taskService";
+import {
+  fetchTasksFromBackend,
+  fetchTaskDetails,
+  updateTask,
+  fetchTasksByFilter
+} from "../services/taskService";
 import { formatarDataHora } from "../utils/dateUtils";
 import TaskCard from "../components/TaskCard";
 
@@ -13,6 +18,9 @@ export default function TaskListPage() {
   const [detailsError, setDetailsError] = useState(null);
   const [updatingStatus, setUpdatingStatus] = useState(false);
   const [updateStatusError, setUpdateStatusError] = useState(null);
+
+  const [filtroCampo, setFiltroCampo] = useState("taskId");
+  const [filtroValor, setFiltroValor] = useState("");
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -63,7 +71,6 @@ export default function TaskListPage() {
 
       await updateTask(taskId, taskData);
 
-      // Atualiza o estado local após a atualização bem-sucedida
       setTasks((prevTasks) =>
         prevTasks.map((task) =>
           task.id === taskId ? { ...task, status: status } : task
@@ -80,6 +87,43 @@ export default function TaskListPage() {
       setUpdatingStatus(false);
     }
   };
+
+  const buscarTarefasFiltradas = async () => {
+    if (!filtroValor.trim()) {
+      alert("Digite um valor para buscar.");
+      return;
+    }
+  
+    try {
+      const data = await fetchTasksByFilter(filtroCampo, filtroValor);
+      console.log("🔍 Resposta do backend (tarefas filtradas):", data);
+      setTasks(data);
+      setExpandedTaskId(null);
+      setSelectedTaskDetails(null);
+    } catch (error) {
+      console.error("❌ Erro ao buscar tarefas filtradas:", error);
+      alert(error.message || "Erro ao filtrar tarefas.");
+    }
+  };
+
+  const limparFiltro = async () => {
+    setFiltroValor("");
+    try {
+      const data = await fetchTasksFromBackend();
+      setTasks(data);
+      setExpandedTaskId(null);
+      setSelectedTaskDetails(null);
+    } catch (error) {
+      alert("Erro ao recarregar tarefas.");
+    }
+  };
+
+  const camposFiltro = [
+    { label: "ID", value: "taskId" },
+    { label: "Título", value: "titulo" },
+    { label: "Descrição", value: "descricao" },
+    { label: "Status", value: "status" },
+  ];
 
   return (
     <>
@@ -144,8 +188,73 @@ export default function TaskListPage() {
             Clique em uma tarefa para ver mais detalhes.
           </p>
 
+          {/* Filtro */}
           <div
-            style={{ display: "flex", justifyContent: "space-between", width: "100%" }}
+            style={{
+              marginTop: "20px",
+              backgroundColor: "#f5f5f5",
+              padding: "20px",
+              borderRadius: "10px",
+              width: "100%",
+              boxShadow: "0 0 10px rgba(0,0,0,0.1)",
+            }}
+          >
+            <h3 style={{ marginBottom: "10px" }}>Filtrar Tarefas</h3>
+            <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
+            <select
+              value={filtroCampo}
+              onChange={(e) => setFiltroCampo(e.target.value)}
+              style={{ padding: "8px", borderRadius: "5px", minWidth: "120px" }}
+            >
+              {camposFiltro.map((campo) => (
+                <option key={campo.value} value={campo.value}>
+                  {campo.label}
+                </option>
+              ))}
+            </select>
+              <input
+                type="text"
+                placeholder="Digite o valor"
+                value={filtroValor}
+                onChange={(e) => setFiltroValor(e.target.value)}
+                style={{ padding: "8px", borderRadius: "5px", flexGrow: 1, minWidth: "200px" }}
+              />
+              <button
+                onClick={buscarTarefasFiltradas}
+                style={{
+                  padding: "8px 16px",
+                  backgroundColor: "#2ecc71",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "5px",
+                  cursor: "pointer",
+                }}
+              >
+                Consultar
+              </button>
+              <button
+                onClick={limparFiltro}
+                style={{
+                  padding: "8px 16px",
+                  backgroundColor: "#e74c3c",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "5px",
+                  cursor: "pointer",
+                }}
+              >
+                X
+              </button>
+            </div>
+          </div>
+
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              width: "100%",
+              marginTop: "20px"
+            }}
           >
             <button
               onClick={() => navigate("/tasks/create")}
@@ -194,21 +303,21 @@ export default function TaskListPage() {
           >
             {tasks.length > 0 ? (
               tasks.map((task) => (
-              <TaskCard
-                key={task.id}
-                task={task}
-                isExpanded={expandedTaskId === task.id}
-                selectedTaskDetails={selectedTaskDetails}
-                loadingDetails={loadingDetails}
-                detailsError={detailsError}
-                updatingStatus={updatingStatus}
-                updateStatusError={updateStatusError}
-                toggleExpand={toggleExpand}
-                handleStatusChange={handleStatusChange}
-                onDelete={(deletedId) =>
-                  setTasks((prev) => prev.filter((t) => t.id !== deletedId))
-                }
-              />
+                <TaskCard
+                  key={task.id}
+                  task={task}
+                  isExpanded={expandedTaskId === task.id}
+                  selectedTaskDetails={selectedTaskDetails}
+                  loadingDetails={loadingDetails}
+                  detailsError={detailsError}
+                  updatingStatus={updatingStatus}
+                  updateStatusError={updateStatusError}
+                  toggleExpand={toggleExpand}
+                  handleStatusChange={handleStatusChange}
+                  onDelete={(deletedId) =>
+                    setTasks((prev) => prev.filter((t) => t.id !== deletedId))
+                  }
+                />
               ))
             ) : (
               <p>Nenhuma tarefa encontrada.</p>

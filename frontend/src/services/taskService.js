@@ -1,3 +1,5 @@
+import { normalizeStatus } from '../utils/statusUtils';
+
 export async function fetchTasksFromBackend() {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -101,3 +103,58 @@ export async function deleteTask(taskId) {
     throw error;
   }
 }
+
+export async function searchTasks(paramKey, paramValue) {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    throw new Error("Usuário não autenticado!");
+  }
+
+  try {
+    const url = new URL("http://127.0.0.1:8080/tasks/search");
+    url.searchParams.append(paramKey, paramValue);
+
+    const response = await fetch(url.toString(), {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Erro ao buscar tarefas com filtro.");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Erro ao buscar tarefas com filtro:", error);
+    throw error;
+  }
+}
+
+export const fetchTasksByFilter = async (campo, valor) => {
+  const token = localStorage.getItem("token");
+  
+  // Se o campo for status, normaliza o valor
+  if (campo === 'status') {
+    valor = normalizeStatus(valor);
+  }
+  
+  const params = new URLSearchParams({ [campo]: valor });
+
+  const response = await fetch(`http://127.0.0.1:8080/tasks/search?${params.toString()}`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    const message = await response.text();
+    throw new Error(`Erro na busca: ${response.status} - ${message}`);
+  }
+
+  const data = await response.json();
+  return data;
+};
