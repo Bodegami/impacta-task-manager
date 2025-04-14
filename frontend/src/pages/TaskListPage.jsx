@@ -199,7 +199,7 @@ export default function TaskListPage() {
               boxShadow: "0 0 10px rgba(0,0,0,0.1)",
             }}
           >
-            <h3 style={{ marginBottom: "10px" }}>Filtrar Tarefas</h3>
+            <h3 style={{ marginBottom: "10px", marginTop: "10px" }}>Filtrar Tarefas</h3>
             <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
             <select
               value={filtroCampo}
@@ -293,7 +293,8 @@ export default function TaskListPage() {
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+              gridTemplateColumns: "repeat(auto-fit, minmax(250px, 300px))", // limite de 300px
+              justifyContent: "center", // centraliza os cards
               gap: "20px",
               marginTop: "20px",
               width: "100%",
