@@ -96,7 +96,7 @@ public class TaskServiceImpl implements TaskService {
             case TASK_ID -> repository.findById(UUID.fromString(paramValue))
                     .map(task -> List.of(mapper.toFindAllResponse(task)))
                     .orElseGet(List::of);
-            case TITLE -> toListResponseDto(repository.findAllByUserIdAndTitleIgnoreCase(userUuid, paramValue));
+            case TITLE -> toListResponseDto(repository.findAllByUserIdAndTitleContainingIgnoreCase(userUuid, paramValue));
             case STATUS -> toListResponseDto(repository.findAllByUserIdAndStatusIgnoreCase(userUuid, paramValue));
             case DESCRIPTION -> toListResponseDto(repository.findAllByUserIdAndDescriptionContainingIgnoreCase(userUuid, paramValue));
             default -> List.of();
