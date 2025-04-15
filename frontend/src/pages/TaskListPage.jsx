@@ -4,10 +4,18 @@ import {
   fetchTasksFromBackend,
   fetchTaskDetails,
   updateTask,
-  fetchTasksByFilter
+  fetchTasksByFilter,
 } from "../services/taskService";
 import { formatarDataHora } from "../utils/dateUtils";
 import TaskCard from "../components/TaskCard";
+import { DndContext, closestCorners } from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import DroppableColumn from "../components/DroppableColumn";
+import { SiGooglesearchconsole } from "react-icons/si";
 
 export default function TaskListPage() {
   const navigate = useNavigate();
@@ -22,11 +30,36 @@ export default function TaskListPage() {
   const [filtroCampo, setFiltroCampo] = useState("taskId");
   const [filtroValor, setFiltroValor] = useState("");
 
+  const COLUMN_STATUSES = ["BACKLOG", "TO_DO", "IN_PROGRESS", "DONE"];
+
+  const [columns, setColumns] = useState({
+    BACKLOG: [],
+    TO_DO: [],
+    IN_PROGRESS: [],
+    DONE: [],
+  });
+
   useEffect(() => {
     const fetchTasks = async () => {
       try {
         const data = await fetchTasksFromBackend();
         setTasks(data);
+
+        const organized = {
+          BACKLOG: [],
+          TO_DO: [],
+          IN_PROGRESS: [],
+          DONE: [],
+        };
+
+        data.forEach((task) => {
+          const status = task.status;
+          if (organized[status]) {
+            organized[status].push(task);
+          }
+        });
+
+        setColumns(organized);
       } catch (error) {
         alert(error.message || "Erro ao conectar com o servidor.");
       }
@@ -59,6 +92,10 @@ export default function TaskListPage() {
     setUpdatingStatus(true);
     setUpdateStatusError(null);
 
+      // Fecha expansão antes de atualizar
+      setExpandedTaskId(null);
+      setSelectedTaskDetails(null);
+
     try {
       dueDate = formatarDataHora(dueDate, "-");
 
@@ -70,12 +107,15 @@ export default function TaskListPage() {
       };
 
       await updateTask(taskId, taskData);
+      await refetchAndOrganizeTasks();
 
+      console.log("Tarefa atualizada com sucesso:", taskId, taskData);
       setTasks((prevTasks) =>
         prevTasks.map((task) =>
           task.id === taskId ? { ...task, status: status } : task
         )
       );
+
       setSelectedTaskDetails((prevDetails) => ({
         ...prevDetails,
         status: status,
@@ -88,20 +128,59 @@ export default function TaskListPage() {
     }
   };
 
+  const refetchAndOrganizeTasks = async () => {
+    try {
+      const data = await fetchTasksFromBackend();
+      setTasks(data);
+  
+      const organized = {
+        BACKLOG: [],
+        TO_DO: [],
+        IN_PROGRESS: [],
+        DONE: [],
+      };
+  
+      data.forEach((task) => {
+        const status = task.status;
+        if (organized[status]) {
+          organized[status].push(task);
+        }
+      });
+  
+      setColumns(organized);
+    } catch (error) {
+      alert(error.message || "Erro ao conectar com o servidor.");
+    }
+  };
+
   const buscarTarefasFiltradas = async () => {
     if (!filtroValor.trim()) {
       alert("Digite um valor para buscar.");
       return;
     }
-  
+
     try {
       const data = await fetchTasksByFilter(filtroCampo, filtroValor);
-      console.log("🔍 Resposta do backend (tarefas filtradas):", data);
       setTasks(data);
       setExpandedTaskId(null);
       setSelectedTaskDetails(null);
+
+      const novoMapeamento = {
+        BACKLOG: [],
+        TO_DO: [],
+        IN_PROGRESS: [],
+        DONE: [],
+      };
+
+      data.forEach((task) => {
+        const status = task.status;
+        if (novoMapeamento[status]) {
+          novoMapeamento[status].push(task);
+        }
+      });
+
+      setColumns(novoMapeamento);
     } catch (error) {
-      console.error("❌ Erro ao buscar tarefas filtradas:", error);
       alert(error.message || "Erro ao filtrar tarefas.");
     }
   };
@@ -113,6 +192,21 @@ export default function TaskListPage() {
       setTasks(data);
       setExpandedTaskId(null);
       setSelectedTaskDetails(null);
+
+      const novoMapeamento = {
+        BACKLOG: [],
+        TO_DO: [],
+        IN_PROGRESS: [],
+        DONE: [],
+      };
+
+      data.forEach((task) => {
+        if (novoMapeamento[task.status]) {
+          novoMapeamento[task.status].push(task);
+        }
+      });
+
+      setColumns(novoMapeamento);
     } catch (error) {
       alert("Erro ao recarregar tarefas.");
     }
@@ -124,6 +218,43 @@ export default function TaskListPage() {
     { label: "Descrição", value: "descricao" },
     { label: "Status", value: "status" },
   ];
+
+  const handleDragEnd = async (event) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+
+    const origemStatus = active.data.current?.status;
+    const destinoStatus = over.id;
+
+    if (!origemStatus || !destinoStatus || origemStatus === destinoStatus) return;
+
+    const tarefaMovida = columns[origemStatus].find((task) => task.id === active.id);
+
+    if (!tarefaMovida) return;
+
+    try {
+      await handleStatusChange(
+        tarefaMovida.id,
+        tarefaMovida.title,
+        tarefaMovida.description,
+        tarefaMovida.dueDate,
+        destinoStatus
+      );
+
+      setColumns((prev) => {
+        const novaOrigem = prev[origemStatus].filter((t) => t.id !== tarefaMovida.id);
+        const novoDestino = [tarefaMovida, ...prev[destinoStatus]];
+
+        return {
+          ...prev,
+          [origemStatus]: novaOrigem,
+          [destinoStatus]: novoDestino,
+        };
+      });
+    } catch (error) {
+      alert("Erro ao mover tarefa.");
+    }
+  };
 
   return (
     <>
@@ -171,27 +302,16 @@ export default function TaskListPage() {
             alignItems: "center",
             flexGrow: 1,
             zIndex: 1,
-            width: "80%",
+            width: "95%",
           }}
         >
-          <h1 style={{ fontSize: "2.5rem", marginBottom: "20px", color: "#333" }}>
-            Lista de Tarefas
+          <h1 style={{ fontSize: "2.5rem", marginBottom: "10px", color: "#333" }}>
+            Quadro de Tarefas
           </h1>
-          <p
-            style={{
-              fontSize: "1.2rem",
-              marginBottom: "20px",
-              color: "#555",
-              textAlign: "center",
-            }}
-          >
-            Clique em uma tarefa para ver mais detalhes.
-          </p>
 
-          {/* Filtro */}
           <div
             style={{
-              marginTop: "20px",
+              marginTop: "10px",
               backgroundColor: "#f5f5f5",
               padding: "20px",
               borderRadius: "10px",
@@ -199,19 +319,19 @@ export default function TaskListPage() {
               boxShadow: "0 0 10px rgba(0,0,0,0.1)",
             }}
           >
-            <h3 style={{ marginBottom: "10px", marginTop: "10px" }}>Filtrar Tarefas</h3>
+            <h3 style={{ marginBottom: "10px" }}>Filtrar Tarefas</h3>
             <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
-            <select
-              value={filtroCampo}
-              onChange={(e) => setFiltroCampo(e.target.value)}
-              style={{ padding: "8px", borderRadius: "5px", minWidth: "120px" }}
-            >
-              {camposFiltro.map((campo) => (
-                <option key={campo.value} value={campo.value}>
-                  {campo.label}
-                </option>
-              ))}
-            </select>
+              <select
+                value={filtroCampo}
+                onChange={(e) => setFiltroCampo(e.target.value)}
+                style={{ padding: "8px", borderRadius: "5px", minWidth: "120px" }}
+              >
+                {camposFiltro.map((campo) => (
+                  <option key={campo.value} value={campo.value}>
+                    {campo.label}
+                  </option>
+                ))}
+              </select>
               <input
                 type="text"
                 placeholder="Digite o valor"
@@ -248,14 +368,7 @@ export default function TaskListPage() {
             </div>
           </div>
 
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              width: "100%",
-              marginTop: "20px"
-            }}
-          >
+          <div style={{ marginTop: "20px", display: "flex", gap: "10px" }}>
             <button
               onClick={() => navigate("/tasks/create")}
               style={{
@@ -265,10 +378,7 @@ export default function TaskListPage() {
                 backgroundColor: "#3498db",
                 color: "white",
                 cursor: "pointer",
-                transition: "background-color 0.3s",
               }}
-              onMouseOver={(e) => (e.target.style.backgroundColor = "#2980b9")}
-              onMouseOut={(e) => (e.target.style.backgroundColor = "#3498db")}
             >
               Criar Tarefa
             </button>
@@ -281,49 +391,50 @@ export default function TaskListPage() {
                 backgroundColor: "#3498db",
                 color: "white",
                 cursor: "pointer",
-                transition: "background-color 0.3s",
               }}
-              onMouseOver={(e) => (e.target.style.backgroundColor = "#2980b9")}
-              onMouseOut={(e) => (e.target.style.backgroundColor = "#3498db")}
             >
               Voltar para Home
             </button>
           </div>
 
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(250px, 300px))", // limite de 300px
-              justifyContent: "center", // centraliza os cards
-              gap: "20px",
-              marginTop: "20px",
-              width: "100%",
-              alignItems: "start",
-              paddingBottom: "100px"
-            }}
-          >
-            {tasks.length > 0 ? (
-              tasks.map((task) => (
-                <TaskCard
-                  key={task.id}
-                  task={task}
-                  isExpanded={expandedTaskId === task.id}
-                  selectedTaskDetails={selectedTaskDetails}
-                  loadingDetails={loadingDetails}
-                  detailsError={detailsError}
-                  updatingStatus={updatingStatus}
-                  updateStatusError={updateStatusError}
-                  toggleExpand={toggleExpand}
-                  handleStatusChange={handleStatusChange}
-                  onDelete={(deletedId) =>
-                    setTasks((prev) => prev.filter((t) => t.id !== deletedId))
-                  }
-                />
-              ))
-            ) : (
-              <p>Nenhuma tarefa encontrada.</p>
-            )}
-          </div>
+          <DndContext collisionDetection={closestCorners} onDragEnd={handleDragEnd}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "start",
+                width: "100%",
+                marginTop: "20px",
+                gap: "20px",
+                overflowX: "auto",
+              }}
+            >
+              {COLUMN_STATUSES.map((status) => (
+                <SortableContext
+                  key={status}
+                  items={columns[status].map((t) => t.id)}
+                  strategy={verticalListSortingStrategy}
+                >
+                  <DroppableColumn
+                    id={status}
+                    titulo={status.replace(/_/g, " ").toLowerCase()}
+                    tasks={columns[status]}
+                    expandedTaskId={expandedTaskId}
+                    selectedTaskDetails={selectedTaskDetails}
+                    loadingDetails={loadingDetails}
+                    detailsError={detailsError}
+                    updatingStatus={updatingStatus}
+                    updateStatusError={updateStatusError}
+                    toggleExpand={toggleExpand}
+                    handleStatusChange={handleStatusChange}
+                    onDelete={(deletedId) =>
+                      setTasks((prev) => prev.filter((t) => t.id !== deletedId))
+                    }
+                  />
+                </SortableContext>
+              ))}
+            </div>
+          </DndContext>
         </div>
 
         <footer
@@ -336,8 +447,7 @@ export default function TaskListPage() {
             zIndex: 1,
           }}
         >
-          Projeto de Software Impacta - 2025 | Renato Ferreira -
-          devbodegami@gmail.com
+          Projeto de Software Impacta - 2025 | Renato Ferreira - devbodegami@gmail.com
         </footer>
       </div>
     </>
