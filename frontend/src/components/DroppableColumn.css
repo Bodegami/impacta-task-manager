@@ -1,0 +1,27 @@
+.kanban-column {
+    background-color: #f9fbfc;
+    border: 1px solid #dce3e8;
+    border-radius: 8px;
+    padding: 16px;
+    width: 100%;
+    min-height: 400px;
+    transition: background-color 0.2s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .kanban-column h3 {
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: #1a2e40;
+    font-size: 1.2rem;
+    text-transform: capitalize;
+  }
+  
+  .empty-text {
+    color: #aaa;
+    font-style: italic;
+    margin-top: 20px;
+  }
+  

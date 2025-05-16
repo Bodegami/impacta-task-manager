@@ -8,14 +8,11 @@ import {
 } from "../services/taskService";
 import { formatarDataHora } from "../utils/dateUtils";
 import TaskCard from "../components/TaskCard";
+import "./TaskListPage.css";
+
+// dnd-kit imports
 import { DndContext, closestCorners } from "@dnd-kit/core";
-import {
-  arrayMove,
-  SortableContext,
-  verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
-import DroppableColumn from "../components/DroppableColumn";
-import { SiGooglesearchconsole } from "react-icons/si";
+import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 
 export default function TaskListPage() {
   const navigate = useNavigate();
@@ -80,7 +77,6 @@ export default function TaskListPage() {
         const data = await fetchTaskDetails(taskId);
         setSelectedTaskDetails(data);
       } catch (error) {
-        console.error("Erro ao buscar detalhes:", error);
         setDetailsError("Erro ao buscar detalhes da tarefa.");
       } finally {
         setLoadingDetails(false);
@@ -92,9 +88,8 @@ export default function TaskListPage() {
     setUpdatingStatus(true);
     setUpdateStatusError(null);
 
-      // Fecha expansão antes de atualizar
-      setExpandedTaskId(null);
-      setSelectedTaskDetails(null);
+    setExpandedTaskId(null);
+    setSelectedTaskDetails(null);
 
     try {
       dueDate = formatarDataHora(dueDate, "-");
@@ -109,7 +104,6 @@ export default function TaskListPage() {
       await updateTask(taskId, taskData);
       await refetchAndOrganizeTasks();
 
-      console.log("Tarefa atualizada com sucesso:", taskId, taskData);
       setTasks((prevTasks) =>
         prevTasks.map((task) =>
           task.id === taskId ? { ...task, status: status } : task
@@ -121,7 +115,6 @@ export default function TaskListPage() {
         status: status,
       }));
     } catch (error) {
-      console.error("Erro ao atualizar status:", error);
       setUpdateStatusError("Erro ao atualizar o status.");
     } finally {
       setUpdatingStatus(false);
@@ -132,21 +125,21 @@ export default function TaskListPage() {
     try {
       const data = await fetchTasksFromBackend();
       setTasks(data);
-  
+
       const organized = {
         BACKLOG: [],
         TO_DO: [],
         IN_PROGRESS: [],
         DONE: [],
       };
-  
+
       data.forEach((task) => {
         const status = task.status;
         if (organized[status]) {
           organized[status].push(task);
         }
       });
-  
+
       setColumns(organized);
     } catch (error) {
       alert(error.message || "Erro ao conectar com o servidor.");
@@ -219,112 +212,54 @@ export default function TaskListPage() {
     { label: "Status", value: "status" },
   ];
 
+  // Função de drag and drop corrigida
   const handleDragEnd = async (event) => {
     const { active, over } = event;
     if (!over || active.id === over.id) return;
 
-    const origemStatus = active.data.current?.status;
+    // Descobre de qual status para qual status está indo
+    let origemStatus = null;
+    COLUMN_STATUSES.forEach((status) => {
+      if (columns[status].find((t) => t.id === active.id)) origemStatus = status;
+    });
+
     const destinoStatus = over.id;
 
-    if (!origemStatus || !destinoStatus || origemStatus === destinoStatus) return;
+    // Se o card foi arrastado para outra coluna
+    if (
+      origemStatus &&
+      destinoStatus &&
+      origemStatus !== destinoStatus &&
+      COLUMN_STATUSES.includes(destinoStatus)
+    ) {
+      const tarefaMovida = columns[origemStatus].find((t) => t.id === active.id);
+      if (!tarefaMovida) return;
 
-    const tarefaMovida = columns[origemStatus].find((task) => task.id === active.id);
-
-    if (!tarefaMovida) return;
-
-    try {
       await handleStatusChange(
         tarefaMovida.id,
         tarefaMovida.title,
         tarefaMovida.description,
-        tarefaMovida.dueDate,
+        tarefaMovida.dueDate || tarefaMovida.due_date,
         destinoStatus
       );
-
-      setColumns((prev) => {
-        const novaOrigem = prev[origemStatus].filter((t) => t.id !== tarefaMovida.id);
-        const novoDestino = [tarefaMovida, ...prev[destinoStatus]];
-
-        return {
-          ...prev,
-          [origemStatus]: novaOrigem,
-          [destinoStatus]: novoDestino,
-        };
-      });
-    } catch (error) {
-      alert("Erro ao mover tarefa.");
     }
   };
 
   return (
     <>
-      <div
-        style={{
-          position: "fixed",
-          top: 0,
-          left: 0,
-          width: "100%",
-          height: "100%",
-          backgroundImage: `url(/assets/post-its.jpeg)`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundAttachment: "fixed",
-          zIndex: -1,
-        }}
-      ></div>
+      <div className="tasklist-bg-image"></div>
+      <div className="tasklist-main-container">
+        <div className="tasklist-bg-overlay"></div>
+        <div className="tasklist-content">
+          <h1 className="tasklist-title">Quadro de Tarefas</h1>
 
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          minHeight: "100vh",
-          position: "relative",
-          width: "100%",
-        }}
-      >
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: "rgba(255, 255, 255, 0.8)",
-            zIndex: 0,
-          }}
-        ></div>
-
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            flexGrow: 1,
-            zIndex: 1,
-            width: "95%",
-          }}
-        >
-          <h1 style={{ fontSize: "2.5rem", marginBottom: "10px", color: "#333" }}>
-            Quadro de Tarefas
-          </h1>
-
-          <div
-            style={{
-              marginTop: "10px",
-              backgroundColor: "#f5f5f5",
-              padding: "20px",
-              borderRadius: "10px",
-              width: "100%",
-              boxShadow: "0 0 10px rgba(0,0,0,0.1)",
-            }}
-          >
+          <div className="tasklist-filter-box">
             <h3 style={{ marginBottom: "10px" }}>Filtrar Tarefas</h3>
-            <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
+            <div className="tasklist-filter-row">
               <select
                 value={filtroCampo}
                 onChange={(e) => setFiltroCampo(e.target.value)}
-                style={{ padding: "8px", borderRadius: "5px", minWidth: "120px" }}
+                className="tasklist-filter-select"
               >
                 {camposFiltro.map((campo) => (
                   <option key={campo.value} value={campo.value}>
@@ -337,116 +272,93 @@ export default function TaskListPage() {
                 placeholder="Digite o valor"
                 value={filtroValor}
                 onChange={(e) => setFiltroValor(e.target.value)}
-                style={{ padding: "8px", borderRadius: "5px", flexGrow: 1, minWidth: "200px" }}
+                className="tasklist-filter-input"
               />
               <button
                 onClick={buscarTarefasFiltradas}
-                style={{
-                  padding: "8px 16px",
-                  backgroundColor: "#2ecc71",
-                  color: "white",
-                  border: "none",
-                  borderRadius: "5px",
-                  cursor: "pointer",
-                }}
+                className="tasklist-filter-btn tasklist-filter-btn-green"
               >
                 Consultar
               </button>
               <button
                 onClick={limparFiltro}
-                style={{
-                  padding: "8px 16px",
-                  backgroundColor: "#e74c3c",
-                  color: "white",
-                  border: "none",
-                  borderRadius: "5px",
-                  cursor: "pointer",
-                }}
+                className="tasklist-filter-btn tasklist-filter-btn-red"
               >
                 X
               </button>
             </div>
           </div>
 
-          <div style={{ marginTop: "20px", display: "flex", gap: "10px" }}>
+          <div className="tasklist-actions-row">
             <button
               onClick={() => navigate("/tasks/create")}
-              style={{
-                padding: "10px 20px",
-                borderRadius: "5px",
-                border: "none",
-                backgroundColor: "#3498db",
-                color: "white",
-                cursor: "pointer",
-              }}
+              className="tasklist-action-btn"
             >
               Criar Tarefa
             </button>
             <button
               onClick={() => navigate("/")}
-              style={{
-                padding: "10px 20px",
-                borderRadius: "5px",
-                border: "none",
-                backgroundColor: "#3498db",
-                color: "white",
-                cursor: "pointer",
-              }}
+              className="tasklist-action-btn"
             >
               Voltar para Home
             </button>
           </div>
 
+          {/* QUADRO DE TAREFAS COM LINHAS VERTICAIS E DRAG AND DROP */}
           <DndContext collisionDetection={closestCorners} onDragEnd={handleDragEnd}>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "start",
-                width: "100%",
-                marginTop: "20px",
-                gap: "20px",
-                overflowX: "auto",
-              }}
-            >
+            <div className="tasklist-board">
+              {[1, 2, 3].map((i) => (
+                <div
+                  key={i}
+                  className="tasklist-board-divider"
+                  style={{
+                    left: `calc(${(i * 100) / 4}% - 2px)`,
+                  }}
+                />
+              ))}
+
               {COLUMN_STATUSES.map((status) => (
                 <SortableContext
                   key={status}
+                  id={status}
                   items={columns[status].map((t) => t.id)}
                   strategy={verticalListSortingStrategy}
                 >
-                  <DroppableColumn
-                    id={status}
-                    titulo={status.replace(/_/g, " ").toLowerCase()}
-                    tasks={columns[status]}
-                    expandedTaskId={expandedTaskId}
-                    selectedTaskDetails={selectedTaskDetails}
-                    loadingDetails={loadingDetails}
-                    detailsError={detailsError}
-                    updatingStatus={updatingStatus}
-                    updateStatusError={updateStatusError}
-                    toggleExpand={toggleExpand}
-                    handleStatusChange={handleStatusChange}
-                    onDelete={(deletedId) =>
-                      setTasks((prev) => prev.filter((t) => t.id !== deletedId))
-                    }
-                  />
+                  <div className="tasklist-board-column" id={status}>
+                    <span className="tasklist-board-column-title">
+                      {status.replace(/_/g, " ").toUpperCase()}
+                    </span>
+                    <div className="tasklist-board-cards">
+                      {columns[status].length === 0 ? (
+                        <p className="tasklist-board-empty">Sem tarefas</p>
+                      ) : (
+                        columns[status].map((task) => (
+                          <TaskCard
+                            key={task.id}
+                            task={task}
+                            isExpanded={expandedTaskId === task.id}
+                            selectedTaskDetails={selectedTaskDetails}
+                            loadingDetails={loadingDetails}
+                            detailsError={detailsError}
+                            updatingStatus={updatingStatus}
+                            updateStatusError={updateStatusError}
+                            toggleExpand={toggleExpand}
+                            handleStatusChange={handleStatusChange}
+                            onDelete={() =>
+                              setTasks((prev) => prev.filter((t) => t.id !== task.id))
+                            }
+                          />
+                        ))
+                      )}
+                    </div>
+                  </div>
                 </SortableContext>
               ))}
             </div>
           </DndContext>
         </div>
 
-        <footer
-          style={{
-            backgroundColor: "#34495e",
-            color: "white",
-            width: "100%",
-            textAlign: "center",
-            padding: "10px 0",
-            zIndex: 1,
-          }}
-        >
+        <footer className="tasklist-footer">
           Projeto de Software Impacta - 2025 | Renato Ferreira - devbodegami@gmail.com
         </footer>
       </div>
