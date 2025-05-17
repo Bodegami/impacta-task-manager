@@ -136,7 +136,7 @@
   margin-bottom: 40px;
   width: 100%;
   max-width: 1500px; /* aumentada */
-  background: #bbb;
+  background: rgba(187, 187, 187, 0.7); /* <-- transparência aqui */
   border-radius: 20px;
   padding: 40px 30px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.07);
@@ -155,7 +155,7 @@
   top: 24px;
   width: 4px;
   height: calc(100% - 48px);
-  background: #222;
+  background: rgba(34, 34, 34, 0.6); /* preto com transparência */
   border-radius: 2px;
   z-index: 2;
 }
