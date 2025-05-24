@@ -1,8 +1,9 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { formatarDataHora } from "../utils/dateUtils";
-import { FaTrash, FaEdit } from "react-icons/fa"; // Ícones de lixeira e edição
+import { FaTrash, FaEdit } from "react-icons/fa";
 import { deleteTask } from "../services/taskService";
+import "./TaskCard.css";
 
 const TaskCard = ({
   task,
@@ -37,6 +38,7 @@ const TaskCard = ({
 
   return (
     <div
+      className={`task-card ${isExpanded ? "expanded" : ""} status-${task.status.toLowerCase()}`}
       key={task.id}
       onClick={(e) => {
         if (e.target.tagName === "SELECT" || e.target.tagName === "OPTION") {
@@ -45,44 +47,13 @@ const TaskCard = ({
         }
         toggleExpand(task.id);
       }}
-      style={{
-        position: "relative",
-        padding: isExpanded ? "20px" : "15px",
-        borderRadius: "10px",
-        backgroundColor: "#f9f9f9",
-        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-        textAlign: "center",
-        borderLeft: `5px solid ${
-          task.status === "DONE"
-            ? "#2ecc71"
-            : task.status === "TO_DO"
-            ? "#f39c12"
-            : task.status === "IN_PROGRESS"
-            ? "#e74c3c"
-            : "#D3D3D3"
-        }`,
-        cursor: "pointer",
-        transform: isExpanded ? "scale(1.05)" : "scale(1)",
-        height: isExpanded ? "auto" : "120px",
-        paddingBottom: isExpanded ? "20px" : "30px",
-      }}
     >
       {isExpanded && (
         <>
           {/* Botão Editar */}
           <button
+            className="task-card-btn edit"
             onClick={handleEdit}
-            style={{
-              position: "absolute",
-              top: "10px",
-              right: "45px",
-              background: "transparent",
-              border: "none",
-              cursor: "pointer",
-              color: "#2980b9",
-              fontSize: "1.2rem",
-              marginRight: "5px",
-            }}
             title="Editar Tarefa"
           >
             <FaEdit />
@@ -90,17 +61,8 @@ const TaskCard = ({
 
           {/* Botão Excluir */}
           <button
+            className="task-card-btn delete"
             onClick={handleDelete}
-            style={{
-              position: "absolute",
-              top: "10px",
-              right: "10px",
-              background: "transparent",
-              border: "none",
-              cursor: "pointer",
-              color: "#c0392b",
-              fontSize: "1.2rem",
-            }}
             title="Excluir Tarefa"
           >
             <FaTrash />
@@ -108,32 +70,16 @@ const TaskCard = ({
         </>
       )}
 
-      <h3 style={{ marginBottom: "10px", color: "#333" }}>
+      <h3 className="task-card-title">
         {task.title.toUpperCase()}
       </h3>
-      <p style={{ fontSize: "0.9rem", color: "#666" }}>ID: {task.id}</p>
-      <p
-        style={{
-          fontSize: "0.9rem",
-          fontWeight: "bold",
-          color: isExpanded ? "#000" : "#666",
-        }}
-      >
+      <p className="task-card-id">ID: {task.id}</p>
+      <p className={`task-card-status ${isExpanded ? "expanded" : ""}`}>
         Status: {task.status.replace("_", " ")}
       </p>
 
       {isExpanded && (
-        <div
-          style={{
-            backgroundColor: "#fff",
-            boxShadow: "0px 10px 20px rgba(0, 0, 0, 0.1)",
-            padding: "15px",
-            marginTop: "10px",
-            borderRadius: "5px",
-            textAlign: "left",
-            animation: "fadeIn 0.3s ease-in-out",
-          }}
-        >
+        <div className="task-card-details">
           {loadingDetails ? (
             <p>Carregando detalhes...</p>
           ) : detailsError ? (

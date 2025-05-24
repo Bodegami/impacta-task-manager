@@ -1,0 +1,210 @@
+.kanban-board {
+  display: flex;
+  gap: 20px;
+  justify-content: space-between;
+}
+
+.kanban-column {
+  background-color: #f2f6f8;
+  border-radius: 8px;
+  padding: 15px;
+  width: 23%;
+  min-height: 300px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.kanban-column h3 {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.empty-text {
+  text-align: center;
+  color: gray;
+  font-style: italic;
+}
+
+.tasklist-bg-image {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-image: url(/assets/post-its.jpeg);
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  z-index: -1;
+}
+
+.tasklist-bg-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.8);
+  z-index: 0;
+}
+
+.tasklist-main-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  position: relative;
+  width: 100%;
+}
+
+.tasklist-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-grow: 1;
+  z-index: 1;
+  width: 95%;
+}
+
+.tasklist-title {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.tasklist-filter-box {
+  margin-top: 10px;
+  background-color: #f5f5f5;
+  padding: 20px;
+  border-radius: 10px;
+  width: 100%;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.tasklist-filter-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.tasklist-filter-select {
+  padding: 8px;
+  border-radius: 5px;
+  min-width: 120px;
+}
+
+.tasklist-filter-input {
+  padding: 8px;
+  border-radius: 5px;
+  flex-grow: 1;
+  min-width: 200px;
+}
+
+.tasklist-filter-btn {
+  padding: 8px 16px;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.tasklist-filter-btn-green {
+  background-color: #2ecc71;
+}
+
+.tasklist-filter-btn-red {
+  background-color: #e74c3c;
+}
+
+.tasklist-actions-row {
+  margin-top: 20px;
+  display: flex;
+  gap: 10px;
+}
+
+.tasklist-action-btn {
+  padding: 10px 20px;
+  border-radius: 5px;
+  border: none;
+  background-color: #3498db;
+  color: white;
+  cursor: pointer;
+}
+
+.tasklist-board {
+  margin-top: 40px;
+  margin-bottom: 40px;
+  width: 100%;
+  max-width: 1500px; /* aumentada */
+  background: rgba(187, 187, 187, 0.7); /* <-- transparência aqui */
+  border-radius: 20px;
+  padding: 40px 30px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 32px; /* aumentada */
+  position: relative;
+  min-height: 400px;
+  box-sizing: border-box;
+}
+
+.tasklist-board-divider {
+  position: absolute;
+  top: 24px;
+  width: 4px;
+  height: calc(100% - 48px);
+  background: rgba(34, 34, 34, 0.6); /* preto com transparência */
+  border-radius: 2px;
+  z-index: 2;
+}
+
+.tasklist-board-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 400px;
+  padding: 24px 24px; /* aumentada */
+  z-index: 3;
+  box-sizing: border-box;
+}
+
+.tasklist-board-column-title {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.tasklist-board-cards {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* aumentada para garantir espaçamento mesmo expandido */
+}
+
+.tasklist-board-empty {
+  text-align: center;
+  color: #7f8c8d;
+}
+
+/* Garante que o card ocupe toda a largura da coluna e mantenha espaçamento mesmo expandido */
+.tasklist-board-cards > * {
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0;
+}
+
+.tasklist-board-empty {
+  text-align: center;
+  color: #7f8c8d;
+}
+
+.tasklist-footer {
+  background-color: #34495e;
+  color: white;
+  width: 100%;
+  text-align: center;
+  padding: 10px 0;
+  z-index: 1;
+}
