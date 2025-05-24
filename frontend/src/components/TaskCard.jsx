@@ -73,9 +73,11 @@ const TaskCard = ({
       <h3 className="task-card-title">
         {task.title.toUpperCase()}
       </h3>
-      <p className="task-card-id">ID: {task.id}</p>
+      <p className={`task-card-id ${isExpanded ? "expanded" : ""}`}>
+        <strong>ID:</strong> {task.id}
+      </p>
       <p className={`task-card-status ${isExpanded ? "expanded" : ""}`}>
-        Status: {task.status.replace("_", " ")}
+        <strong>Status:</strong> {task.status.replace("_", " ")}
       </p>
 
       {isExpanded && (
@@ -91,7 +93,7 @@ const TaskCard = ({
                 {selectedTaskDetails.description || "N/A"}
               </p>
               <p>
-                <strong>Data de Criação:</strong>{" "}
+                <strong>Criado em:</strong>{" "}
                 {selectedTaskDetails.created_at
                   ? formatarDataHora(selectedTaskDetails.created_at, "/")
                   : "N/A"}

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { fetchTaskDetails, updateTask } from "../services/taskService";
+import "./EditTaskPage.css";
 
 export default function EditTaskPage() {
   const { id } = useParams();
@@ -84,72 +85,39 @@ export default function EditTaskPage() {
   };
 
   if (loading) {
-    return <div style={{ padding: "20px", textAlign: "center" }}>Carregando...</div>;
+    return <div className="loading">Carregando...</div>;
   }
 
   return (
-    <div style={{
-        display: "flex",
-        flexDirection: "column",
-        minHeight: "100vh",
-        overflow: "hidden",
-        backgroundImage: `url(/assets/post-its.jpeg)`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        position: "relative",
-        maxWidth: "100%", // Alterado de 100vw para 100%
-        width: "100%",    // Alterado de 100vw para 100%
-        boxSizing: "border-box"
-    }}>
-      {/* Overlay */}
-      <div style={{
-        position: "absolute",
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundColor: "rgba(255, 255, 255, 0.8)",
-        zIndex: 0
-      }}></div>
+    <div className="edit-task-container">
+      <div className="edit-task-overlay"></div>
 
-      <div style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        zIndex: 1,
-        padding: "40px"
-      }}>
-        <h1 style={{
-          fontSize: "2.5rem",
-          marginBottom: "20px",
-          color: "#333"
-        }}>
-          Editar Tarefa
-        </h1>
-        <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "10px", width: "300px" }}>
+      <div className="edit-task-content">
+        <h1 className="edit-task-title">Editar Tarefa</h1>
+        <form onSubmit={handleSubmit} className="edit-task-form">
           <input
             type="text"
             placeholder={title}
             value={newTitle}
             onChange={(e) => setNewTitle(e.target.value)}
-            style={{ padding: "10px", borderRadius: "5px", border: "1px solid #ccc" }}
+            className="edit-task-input"
           />
           <textarea
             placeholder={description}
             value={newDescription}
             onChange={(e) => setNewDescription(e.target.value)}
-            style={{ padding: "10px", borderRadius: "5px", border: "1px solid #ccc" }}
+            className="edit-task-input"
           />
           <input
             type="datetime-local"
             value={newDueDate || dueDate}
             onChange={(e) => setNewDueDate(e.target.value)}
-            style={{ padding: "10px", borderRadius: "5px", border: "1px solid #ccc" }}
+            className="edit-task-input"
           />
           <select
             value={newStatus || status}
             onChange={(e) => setNewStatus(e.target.value)}
-            style={{ padding: "10px", borderRadius: "5px", border: "1px solid #ccc" }}
+            className="edit-task-input"
           >
             <option value="BACKLOG">BACKLOG</option>
             <option value="TO_DO">TO DO</option>
@@ -158,15 +126,7 @@ export default function EditTaskPage() {
           </select>
           <button
             type="submit"
-            style={{
-              padding: "10px",
-              borderRadius: "5px",
-              border: "none",
-              backgroundColor: "#3498db",
-              color: "white",
-              cursor: "pointer",
-              transition: "background-color 0.3s"
-            }}
+            className="edit-task-submit-btn"
             onMouseOver={(e) => e.target.style.backgroundColor = "#2980b9"}
             onMouseOut={(e) => e.target.style.backgroundColor = "#3498db"}
           >
@@ -175,16 +135,7 @@ export default function EditTaskPage() {
         </form>
         <button
           onClick={() => navigate("/tasks")}
-          style={{
-            marginTop: "10px",
-            padding: "10px",
-            borderRadius: "5px",
-            border: "none",
-            backgroundColor: "#2ecc71",
-            color: "white",
-            cursor: "pointer",
-            transition: "background-color 0.3s"
-          }}
+          className="edit-task-back-btn"
           onMouseOver={(e) => e.target.style.backgroundColor = "#27ae60"}
           onMouseOut={(e) => e.target.style.backgroundColor = "#2ecc71"}
         >
@@ -192,14 +143,8 @@ export default function EditTaskPage() {
         </button>
       </div>
 
-      <div style={{ marginTop: "auto", zIndex: 1 }}>
-        <footer style={{
-          backgroundColor: "#34495e",
-          color: "white",
-          width: "100vw",
-          textAlign: "center",
-          padding: "10px 0"
-        }}>
+      <div className="edit-task-footer">
+        <footer className="default-footer">
           Projeto de Software Impacta - 2025 | Renato Ferreira - devbodegami@gmail.com
         </footer>
       </div>

@@ -253,8 +253,23 @@ export default function TaskListPage() {
         <div className="tasklist-content">
           <h1 className="tasklist-title">Quadro de Tarefas</h1>
 
+          <div className="tasklist-actions-row">
+            <button
+              onClick={() => navigate("/tasks/create")}
+              className="tasklist-action-btn"
+            >
+              Criar Tarefa
+            </button>
+            <button
+              onClick={() => navigate("/")}
+              className="tasklist-action-btn"
+            >
+              Logout
+            </button>
+          </div>
+
           <div className="tasklist-filter-box">
-            <h3 style={{ marginBottom: "10px" }}>Filtrar Tarefas</h3>
+            <h3 style={{ marginBottom: "10px", marginTop: "0px" }}>Filtrar Tarefas</h3>
             <div className="tasklist-filter-row">
               <select
                 value={filtroCampo}
@@ -289,22 +304,7 @@ export default function TaskListPage() {
             </div>
           </div>
 
-          <div className="tasklist-actions-row">
-            <button
-              onClick={() => navigate("/tasks/create")}
-              className="tasklist-action-btn"
-            >
-              Criar Tarefa
-            </button>
-            <button
-              onClick={() => navigate("/")}
-              className="tasklist-action-btn"
-            >
-              Voltar para Home
-            </button>
-          </div>
-
-          {/* QUADRO DE TAREFAS COM LINHAS VERTICAIS E DRAG AND DROP */}
+          {/* QUADRO DE TAREFAS COM LINHAS VERTICAIS */}
           <DndContext collisionDetection={closestCorners} onDragEnd={handleDragEnd}>
             <div className="tasklist-board">
               {[1, 2, 3].map((i) => (
@@ -358,7 +358,7 @@ export default function TaskListPage() {
           </DndContext>
         </div>
 
-        <footer className="tasklist-footer">
+        <footer className="default-footer">
           Projeto de Software Impacta - 2025 | Renato Ferreira - devbodegami@gmail.com
         </footer>
       </div>
