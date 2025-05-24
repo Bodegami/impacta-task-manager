@@ -1,5 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { loginUser } from "../services/userService";
+import "./LoginPage.css";
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -10,88 +12,28 @@ export default function LoginPage() {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:8080/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        localStorage.setItem("token", data.token); // Armazena o token JWT
-        navigate("/tasks");
-      } else {
-        alert("Invalid email or password");
-      }
+      const credentials = { email, password };
+      await loginUser(credentials);
+      navigate("/tasks");
     } catch (error) {
-      console.error("Error:", error);
-      alert("An error occurred");
+      alert(error.message || "Ocorreu um erro");
     }
   };
 
   return (
-    <div style={{ 
-      display: "flex", 
-      flexDirection: "column", 
-      justifyContent: "space-between", 
-      alignItems: "center", 
-      minHeight: "100vh", 
-      backgroundImage: `url(/assets/post-its.jpeg)`,  // Caminho da imagem
-      backgroundSize: "cover",
-      backgroundPosition: "center",
-      position: "relative"
-    }}>
-      {/* Overlay com transparência */}
-      <div style={{
-        position: "absolute",
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundColor: "rgba(255, 255, 255, 0.8)",
-        zIndex: 0
-      }}></div>
+    <div className="login-container">
+      <div className="login-overlay"></div>
 
-      <div style={{ 
-        display: "flex", 
-        flexDirection: "column", 
-        alignItems: "center", 
-        justifyContent: "center", 
-        flexGrow: 1,
-        zIndex: 1
-      }}>
-        <h1 style={{ 
-          fontSize: "2.5rem", 
-          marginBottom: "20px", 
-          color: "#333" 
-        }}>
-          Login
-        </h1>
-        <form 
-          onSubmit={handleSubmit} 
-          style={{ 
-            display: "flex", 
-            flexDirection: "column", 
-            gap: "10px", 
-            backgroundColor: "rgba(255, 255, 255, 0.9)", 
-            padding: "20px", 
-            borderRadius: "10px", 
-            boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)"
-          }}
-        >
+      <div className="login-content">
+        <h1 className="login-title">Login</h1>
+        <form onSubmit={handleSubmit} className="login-form">
           <input 
             type="email" 
             placeholder="Email" 
             value={email} 
             onChange={(e) => setEmail(e.target.value)} 
             required 
-            style={{ 
-              padding: "10px", 
-              borderRadius: "5px", 
-              border: "1px solid #ccc" 
-            }}
+            className="login-input"
           />
           <input 
             type="password" 
@@ -99,23 +41,11 @@ export default function LoginPage() {
             value={password} 
             onChange={(e) => setPassword(e.target.value)} 
             required 
-            style={{ 
-              padding: "10px", 
-              borderRadius: "5px", 
-              border: "1px solid #ccc" 
-            }}
+            className="login-input"
           />
           <button 
             type="submit"
-            style={{ 
-              padding: "10px 20px", 
-              borderRadius: "5px", 
-              border: "none", 
-              backgroundColor: "#3498db", 
-              color: "white", 
-              cursor: "pointer",
-              transition: "background-color 0.3s"
-            }}
+            className="login-submit-btn"
             onMouseOver={(e) => e.target.style.backgroundColor = "#2980b9"}
             onMouseOut={(e) => e.target.style.backgroundColor = "#3498db"}
           >
@@ -124,14 +54,7 @@ export default function LoginPage() {
         </form>
       </div>
 
-      <footer style={{ 
-        backgroundColor: "#34495e", 
-        color: "white", 
-        width: "100%", 
-        textAlign: "center", 
-        padding: "10px 0", 
-        zIndex: 1
-      }}>
+      <footer className="default-footer">
         Projeto de Software Impacta - 2025 | Renato Ferreira - devbodegami@gmail.com
       </footer>
     </div>

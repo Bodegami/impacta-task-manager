@@ -1,0 +1,8 @@
+.default-footer {
+    background-color: #34495e;
+    color: white;
+    width: 100%;
+    text-align: center;
+    padding: 10px 0;
+    z-index: 1;
+}
