@@ -38,7 +38,7 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable) // Desativa a proteção contra CSRF
                 .sessionManagement(AbstractHttpConfigurer::disable) // Desativa o controle de sessão
                 .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers("/users", "/login", "/tasks", "/tasks/*").permitAll()
+                        .requestMatchers("/users", "/login", "/tasks", "/tasks/*", "/tasks/comments", "/comments").permitAll()
                         .requestMatchers(HttpMethod.GET, "/users/*", "/tasks/*", "/tasks/**").hasAnyRole(ADMINISTRATOR, CUSTOMER)
                         .requestMatchers(HttpMethod.PUT, "/users/*", "/tasks/*", "/tasks/**").hasAnyRole(ADMINISTRATOR, CUSTOMER)
                         .requestMatchers(HttpMethod.DELETE, "/users/*", "/tasks/**").hasRole(ADMINISTRATOR)
