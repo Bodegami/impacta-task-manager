@@ -60,6 +60,12 @@
     margin-right: 5px;
 }
 
+.task-card-btn.comments {
+    right: 80px;
+    color: #8e44ad;
+    margin-right: 5px;
+}
+
 .task-card-btn.delete {
     right: 10px;
     color: #c0392b;
