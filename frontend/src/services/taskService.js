@@ -158,3 +158,59 @@ export const fetchTasksByFilter = async (campo, valor) => {
   const data = await response.json();
   return data;
 };
+
+export async function fetchTaskComments(taskId) {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    throw new Error("Usuário não autenticado!");
+  }
+
+  try {
+    const response = await fetch(`http://127.0.0.1:8080/tasks/${taskId}/comments`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Erro ao buscar comentários da tarefa.");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Erro ao buscar comentários:", error);
+    throw error;
+  }
+}
+
+export async function createTaskComment(taskId, comment) {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    throw new Error("Usuário não autenticado!");
+  }
+
+  try {
+    const response = await fetch("http://127.0.0.1:8080/tasks/comments", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        taskId,
+        comment,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Erro ao criar comentário.");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Erro ao criar comentário:", error);
+    throw error;
+  }
+}

@@ -5,7 +5,8 @@ import HomePage from "./pages/HomePage";
 import SignupPage from "./pages/SignupPage";
 import TaskListPage from "./pages/TaskListPage";
 import CreateTaskPage from "./pages/CreateTaskPage";
-import EditTaskPage from "./pages/EditTaskPage"; // <-- nova importação
+import EditTaskPage from "./pages/EditTaskPage";
+import TaskCommentsPage from "./pages/TaskCommentsPage";
 
 export default function App() {
   const [user, setUser] = useState(null);
@@ -19,6 +20,7 @@ export default function App() {
         <Route path="/tasks" element={<TaskListPage setUser={setUser} />} />
         <Route path="/tasks/create" element={<CreateTaskPage setUser={setUser} />} />
         <Route path="/tasks/edit/:id" element={<EditTaskPage setUser={setUser} />} />
+        <Route path="/tasks/:taskId/comments" element={<TaskCommentsPage setUser={setUser} />} />
       </Routes>
     </Router>
   );

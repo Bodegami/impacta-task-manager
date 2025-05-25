@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { formatarDataHora } from "../utils/dateUtils";
-import { FaTrash, FaEdit } from "react-icons/fa";
+import { FaTrash, FaEdit, FaComments } from "react-icons/fa";
 import { deleteTask } from "../services/taskService";
 import "./TaskCard.css";
 
@@ -36,6 +36,11 @@ const TaskCard = ({
     navigate(`/tasks/edit/${task.id}`);
   };
 
+  const handleComments = (e) => {
+    e.stopPropagation();
+    navigate(`/tasks/${task.id}/comments`);
+  };
+
   return (
     <div
       className={`task-card ${isExpanded ? "expanded" : ""} status-${task.status.toLowerCase()}`}
@@ -50,6 +55,15 @@ const TaskCard = ({
     >
       {isExpanded && (
         <>
+          {/* Botão Comentários */}
+          <button
+            className="task-card-btn comments"
+            onClick={handleComments}
+            title="Ver Comentários"
+          >
+            <FaComments />
+          </button>
+
           {/* Botão Editar */}
           <button
             className="task-card-btn edit"
