@@ -44,6 +44,10 @@ Veja o script completo [aqui](./dados/setup.sql).
 - [Diagrama de Entidade e Relacionamentos](./documentation/der_gestao-tarefas.png)
 - [Diagrama de Classes](./documentation/diagrama-de-classes.jpg)
 
+## Additional Documentation
+
+Para documentação detalhada da API gerada a partir do IA, acesse [Task Manager Workflow Documentation](./task-manager_workflow.md).
+
 ## 🚀 Como Executar
 
 ### Pré-requisitos

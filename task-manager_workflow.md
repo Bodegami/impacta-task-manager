@@ -416,5 +416,5 @@ sequenceDiagram
 
 ## Project Information
 
-**Author**: [Your Name]
-**GitHub Repository**: [Your Repository URL]
+**Author**: Renato Ferreira Oliveira  
+**GitHub Repository**: [https://github.com/Bodegami/impacta-task-manager/tree/main](https://github.com/Bodegami/impacta-task-manager/tree/main)
