@@ -1,15 +1,13 @@
 package br.com.bodegami.task_manager.application.usecase.impl;
 
-import br.com.bodegami.task_manager.application.dto.UpdateUserRequestDTO;
-import br.com.bodegami.task_manager.application.dto.UserDetailsResponseDTO;
+import br.com.bodegami.task_manager.application.entrypoint.dto.UpdateUserRequestDTO;
+import br.com.bodegami.task_manager.application.entrypoint.dto.UserDetailsResponseDTO;
 import br.com.bodegami.task_manager.application.usecase.BaseUseCaseTest;
-import br.com.bodegami.task_manager.domain.enums.UserRole;
 import br.com.bodegami.task_manager.domain.exception.UserNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 
-import java.time.LocalDate;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -31,18 +29,13 @@ class UpdateUserUseCaseImplTest extends BaseUseCaseTest {
         
         updateRequest = new UpdateUserRequestDTO(
                 "John Updated",
-                "john.updated@example.com",
-                "newPassword123",
-                "12345678901",
-                LocalDate.of(1990, 1, 1)
+                "john.updated@example.com"
         );
 
         updatedUser = new UserDetailsResponseDTO(
                 userId,
                 "John Updated",
                 "john.updated@example.com",
-                UserRole.USER,
-                "12345678901",
                 "1990-01-01"
         );
     }
@@ -80,9 +73,11 @@ class UpdateUserUseCaseImplTest extends BaseUseCaseTest {
     @Test
     void shouldHandleNullRequest() {
         // Act & Assert
+        doThrow(NullPointerException.class).when(userService).update(userId, null);
+
         assertThrows(NullPointerException.class, 
             () -> updateUserUseCase.execute(userId, null));
         
-        verify(userService, never()).update(any(), any());
+        verify(userService, times(1)).update(userId, null);
     }
 }

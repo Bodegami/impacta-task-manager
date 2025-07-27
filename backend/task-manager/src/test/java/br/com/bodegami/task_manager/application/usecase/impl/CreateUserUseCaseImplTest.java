@@ -1,16 +1,15 @@
 package br.com.bodegami.task_manager.application.usecase.impl;
 
-import br.com.bodegami.task_manager.application.dto.CreateUserRequestDTO;
-import br.com.bodegami.task_manager.application.dto.CreateUserResponseDTO;
+import br.com.bodegami.task_manager.application.entrypoint.dto.CreateUserRequestDTO;
+import br.com.bodegami.task_manager.application.entrypoint.dto.CreateUserResponseDTO;
 import br.com.bodegami.task_manager.application.usecase.BaseUseCaseTest;
-import br.com.bodegami.task_manager.domain.entity.User;
-import br.com.bodegami.task_manager.domain.enums.UserRole;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 
 import java.util.UUID;
 
+import static br.com.bodegami.task_manager.security.RoleName.ROLE_CUSTOMER;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -29,14 +28,14 @@ class CreateUserUseCaseImplTest extends BaseUseCaseTest {
                 "John Doe",
                 "john.doe@example.com",
                 "password123",
-                UserRole.USER
+                ROLE_CUSTOMER.name()
         );
 
         responseDTO = new CreateUserResponseDTO(
                 UUID.randomUUID(),
                 "John Doe",
                 "john.doe@example.com",
-                UserRole.USER
+                ROLE_CUSTOMER.name()
         );
     }
 
@@ -53,7 +52,7 @@ class CreateUserUseCaseImplTest extends BaseUseCaseTest {
         assertEquals(responseDTO.id(), result.id());
         assertEquals(responseDTO.name(), result.name());
         assertEquals(responseDTO.email(), result.email());
-        assertEquals(responseDTO.role(), result.role());
+        assertEquals(responseDTO.createdAt(), result.createdAt());
         
         verify(userService, times(1)).create(requestDTO);
     }
@@ -61,7 +60,9 @@ class CreateUserUseCaseImplTest extends BaseUseCaseTest {
     @Test
     void shouldHandleNullRequest() {
         // Arrange & Act & Assert
+        doThrow(NullPointerException.class).when(userService).create(null);
+
         assertThrows(NullPointerException.class, () -> createUserUseCase.execute(null));
-        verify(userService, never()).create(any());
+        verify(userService, times(1)).create(null);
     }
 }

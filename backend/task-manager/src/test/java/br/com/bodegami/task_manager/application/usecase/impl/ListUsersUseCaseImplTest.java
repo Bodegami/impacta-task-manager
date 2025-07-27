@@ -1,8 +1,7 @@
 package br.com.bodegami.task_manager.application.usecase.impl;
 
-import br.com.bodegami.task_manager.application.dto.UserResponseDTO;
+import br.com.bodegami.task_manager.application.entrypoint.dto.UserResponseDTO;
 import br.com.bodegami.task_manager.application.usecase.BaseUseCaseTest;
-import br.com.bodegami.task_manager.domain.enums.UserRole;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -26,15 +25,11 @@ class ListUsersUseCaseImplTest extends BaseUseCaseTest {
         userList = Arrays.asList(
                 new UserResponseDTO(
                         UUID.randomUUID(),
-                        "John Doe",
-                        "john.doe@example.com",
-                        UserRole.USER
+                        "John Doe"
                 ),
                 new UserResponseDTO(
                         UUID.randomUUID(),
-                        "Jane Smith",
-                        "jane.smith@example.com",
-                        UserRole.ADMIN
+                        "Jane Smith"
                 )
         );
     }
@@ -50,8 +45,8 @@ class ListUsersUseCaseImplTest extends BaseUseCaseTest {
         // Assert
         assertNotNull(result);
         assertEquals(2, result.size());
-        assertEquals(userList.get(0).email(), result.get(0).email());
-        assertEquals(userList.get(1).email(), result.get(1).email());
+        assertEquals(userList.get(0).name(), result.get(0).name());
+        assertEquals(userList.get(1).name(), result.get(1).name());
         
         verify(userService, times(1)).findAll();
     }

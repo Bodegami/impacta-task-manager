@@ -1,7 +1,7 @@
 package br.com.bodegami.task_manager.application.usecase.impl;
 
-import br.com.bodegami.task_manager.application.dto.CreateUserRequestDTO;
-import br.com.bodegami.task_manager.application.dto.CreateUserResponseDTO;
+import br.com.bodegami.task_manager.application.entrypoint.dto.CreateUserRequestDTO;
+import br.com.bodegami.task_manager.application.entrypoint.dto.CreateUserResponseDTO;
 import br.com.bodegami.task_manager.application.usecase.CreateUserUseCase;
 import br.com.bodegami.task_manager.domain.service.UserService;
 import org.springframework.stereotype.Component;

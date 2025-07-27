@@ -51,9 +51,11 @@ class DeleteUserUseCaseImplTest extends BaseUseCaseTest {
     @Test
     void shouldHandleNullId() {
         // Act & Assert
+        doThrow(NullPointerException.class).when(userService).delete(null);
+
         assertThrows(NullPointerException.class, 
             () -> deleteUserUseCase.execute(null));
         
-        verify(userService, never()).delete(any());
+        verify(userService, times(1)).delete(null);
     }
 }

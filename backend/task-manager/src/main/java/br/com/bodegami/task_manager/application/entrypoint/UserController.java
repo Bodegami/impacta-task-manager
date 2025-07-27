@@ -3,6 +3,7 @@ package br.com.bodegami.task_manager.application.entrypoint;
 import br.com.bodegami.task_manager.application.entrypoint.dto.*;
 import br.com.bodegami.task_manager.application.usecase.*;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,6 +12,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/users")
+@RequiredArgsConstructor
 public class UserController {
 
     private final CreateUserUseCase createUserUseCase;
@@ -18,20 +20,6 @@ public class UserController {
     private final GetUserByIdUseCase getUserByIdUseCase;
     private final UpdateUserUseCase updateUserUseCase;
     private final DeleteUserUseCase deleteUserUseCase;
-
-    public UserController(
-            CreateUserUseCase createUserUseCase,
-            ListUsersUseCase listUsersUseCase,
-            GetUserByIdUseCase getUserByIdUseCase,
-            UpdateUserUseCase updateUserUseCase,
-            DeleteUserUseCase deleteUserUseCase
-    ) {
-        this.createUserUseCase = createUserUseCase;
-        this.listUsersUseCase = listUsersUseCase;
-        this.getUserByIdUseCase = getUserByIdUseCase;
-        this.updateUserUseCase = updateUserUseCase;
-        this.deleteUserUseCase = deleteUserUseCase;
-    }
 
     @PostMapping
     public ResponseEntity<CreateUserResponseDTO> create(@RequestBody @Valid CreateUserRequestDTO request) {

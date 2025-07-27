@@ -1,8 +1,7 @@
 package br.com.bodegami.task_manager.application.usecase.impl;
 
-import br.com.bodegami.task_manager.application.dto.UserDetailsResponseDTO;
+import br.com.bodegami.task_manager.application.entrypoint.dto.UserDetailsResponseDTO;
 import br.com.bodegami.task_manager.application.usecase.BaseUseCaseTest;
-import br.com.bodegami.task_manager.domain.enums.UserRole;
 import br.com.bodegami.task_manager.domain.exception.UserNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,8 +28,6 @@ class GetUserByIdUseCaseImplTest extends BaseUseCaseTest {
                 userId,
                 "John Doe",
                 "john.doe@example.com",
-                UserRole.USER,
-                "1234567890",
                 "1990-01-01"
         );
     }

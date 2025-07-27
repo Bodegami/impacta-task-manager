@@ -1,8 +1,7 @@
 package br.com.bodegami.task_manager.application.entrypoint;
 
-import br.com.bodegami.task_manager.application.dto.*;
+import br.com.bodegami.task_manager.application.entrypoint.dto.*;
 import br.com.bodegami.task_manager.application.usecase.*;
-import br.com.bodegami.task_manager.domain.enums.UserRole;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,6 +16,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
+import static br.com.bodegami.task_manager.security.RoleName.ROLE_CUSTOMER;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -56,38 +56,31 @@ class UserControllerTest {
                 "John Doe",
                 "john.doe@example.com",
                 "password123",
-                UserRole.USER
+                ROLE_CUSTOMER.name()
         );
 
         createResponse = new CreateUserResponseDTO(
                 userId,
                 "John Doe",
                 "john.doe@example.com",
-                UserRole.USER
+                "1990-01-01"
         );
 
         userResponse = new UserResponseDTO(
                 userId,
-                "John Doe",
-                "john.doe@example.com",
-                UserRole.USER
+                "John Doe"
         );
 
         userDetailsResponse = new UserDetailsResponseDTO(
                 userId,
                 "John Doe",
                 "john.doe@example.com",
-                UserRole.USER,
-                "1234567890",
                 LocalDate.of(1990, 1, 1).toString()
         );
 
         updateRequest = new UpdateUserRequestDTO(
                 "John Updated",
-                "john.updated@example.com",
-                "newPassword123",
-                "12345678901",
-                LocalDate.of(1990, 1, 1)
+                "john.updated@example.com"
         );
     }
 
