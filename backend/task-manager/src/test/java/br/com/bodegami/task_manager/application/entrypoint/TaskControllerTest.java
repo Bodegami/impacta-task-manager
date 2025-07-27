@@ -100,7 +100,7 @@ class TaskControllerTest {
         List<TaskResponseDTO> expectedTasks = List.of(
                 new TaskResponseDTO(taskId, "Task 1", "PENDING")
         );
-        
+
         when(searchTasksUseCase.execute(httpHeaders, params)).thenReturn(expectedTasks);
 
         // Act
@@ -134,6 +134,7 @@ class TaskControllerTest {
     @Test
     void deleteTask_ShouldReturnNoContent() {
         // Act
+
         ResponseEntity<Void> result = taskController.deleteTaskById(taskId);
 
         // Assert
@@ -149,8 +150,7 @@ class TaskControllerTest {
                 new TaskResponseDTO(taskId, "Task 1", "PENDING")
         );
 
-        when(userService.getUserIdFromToken(httpHeaders)).thenReturn(userId);
-        when(getAllTasksUseCase.execute(UUID.fromString(userId))).thenReturn(expectedTasks);
+        when(getAllTasksUseCase.execute(httpHeaders)).thenReturn(expectedTasks);
 
         // Act
         ResponseEntity<List<TaskResponseDTO>> result = taskController.findAllTaskByUserId(httpHeaders);
@@ -159,7 +159,7 @@ class TaskControllerTest {
         assertNotNull(result);
         assertEquals(HttpStatus.OK, result.getStatusCode());
         assertEquals(expectedTasks, result.getBody());
-        verify(getAllTasksUseCase).execute(UUID.fromString(userId));
+        verify(getAllTasksUseCase).execute(httpHeaders);
     }
 
     @Test

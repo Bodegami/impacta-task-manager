@@ -87,8 +87,7 @@ public class TaskController {
     @GetMapping
     public ResponseEntity<List<TaskResponseDTO>> findAllTaskByUserId(
             @RequestHeader HttpHeaders httpHeaders) {
-        String userId = userService.getUserIdFromToken(httpHeaders);
-        List<TaskResponseDTO> response = getAllTasksUseCase.execute(UUID.fromString(userId));
+        List<TaskResponseDTO> response = getAllTasksUseCase.execute(httpHeaders);
         return ResponseEntity.ok(response);
     }
 
