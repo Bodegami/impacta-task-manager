@@ -52,8 +52,7 @@ public class TaskController {
     public ResponseEntity<CreateTaskResponseDTO> create(
             @RequestHeader HttpHeaders httpHeaders,
             @RequestBody CreateTaskRequestDTO request) {
-        String userId = userService.getUserIdFromToken(httpHeaders);
-        CreateTaskResponseDTO response = createTaskUseCase.execute(request, userId);
+        CreateTaskResponseDTO response = createTaskUseCase.execute(request, httpHeaders);
         return ResponseEntity.ok(response);
     }
 

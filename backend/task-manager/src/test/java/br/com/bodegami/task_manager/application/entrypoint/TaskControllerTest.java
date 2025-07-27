@@ -61,10 +61,9 @@ class TaskControllerTest {
         // Arrange
         var request = new CreateTaskRequestDTO("Test Task", "Description", "PENDING");
         var response = new CreateTaskResponseDTO(taskId, "Test Task", "Description", "PENDING",
-                null, null, null);
-
-        when(userService.getUserIdFromToken(httpHeaders)).thenReturn(userId);
-        when(createTaskUseCase.execute(request, userId)).thenReturn(response);
+                UUID.fromString(userId), null, null);
+        
+        when(createTaskUseCase.execute(request, httpHeaders)).thenReturn(response);
 
         // Act
         ResponseEntity<CreateTaskResponseDTO> result = taskController.create(httpHeaders, request);
@@ -73,7 +72,7 @@ class TaskControllerTest {
         assertNotNull(result);
         assertEquals(HttpStatus.OK, result.getStatusCode());
         assertEquals(response, result.getBody());
-        verify(createTaskUseCase).execute(request, userId);
+        verify(createTaskUseCase).execute(request, httpHeaders);
     }
 
     @Test
