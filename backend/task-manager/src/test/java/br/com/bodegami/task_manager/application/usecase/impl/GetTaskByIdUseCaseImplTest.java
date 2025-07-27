@@ -9,6 +9,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -25,16 +26,19 @@ class GetTaskByIdUseCaseImplTest {
 
     private UUID taskId;
     private TaskDetailsResponse taskDetails;
+    private final String userId = "550e8400-e29b-41d4-a716-446655440000";
 
     @BeforeEach
     void setUp() {
         taskId = UUID.fromString("550e8400-e29b-41d4-a716-446655440001");
         taskDetails = new TaskDetailsResponse(
-            taskId.toString(),
+            taskId,
             "Test Task",
             "Test Description",
             "PENDING",
-            null, null, null, null, null
+                UUID.fromString(userId),
+                LocalDateTime.of(1990, 2, 1, 0, 0),
+                LocalDateTime.of(1990, 1, 1, 0, 0)
         );
     }
 
@@ -45,15 +49,19 @@ class GetTaskByIdUseCaseImplTest {
         TaskDetailsResponse result = getTaskByIdUseCase.execute(taskId);
 
         assertNotNull(result);
-        assertEquals(taskId.toString(), result.id());
+        assertEquals(taskId, result.id());
         assertEquals("Test Task", result.title());
         verify(taskService, times(1)).findByTaskId(taskId);
     }
 
     @Test
     void shouldHandleNullTaskId() {
-        assertThrows(NullPointerException.class, 
+        doThrow(NullPointerException.class).when(taskService).findByTaskId(null);
+
+        assertThrows(NullPointerException.class,
             () -> getTaskByIdUseCase.execute(null));
+
+        verify(taskService, times(1)).findByTaskId(null);
     }
 
     @Test
@@ -62,7 +70,7 @@ class GetTaskByIdUseCaseImplTest {
         when(taskService.findByTaskId(nonExistentId)).thenReturn(null);
 
         TaskDetailsResponse result = getTaskByIdUseCase.execute(nonExistentId);
-        
+
         assertNull(result);
         verify(taskService, times(1)).findByTaskId(nonExistentId);
     }

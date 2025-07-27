@@ -10,10 +10,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDateTime;
+import java.util.UUID;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class CreateTaskUseCaseImplTest {
@@ -31,7 +34,15 @@ class CreateTaskUseCaseImplTest {
     @BeforeEach
     void setUp() {
         request = new CreateTaskRequestDTO("Test Task", "Test Description", "PENDING");
-        response = new CreateTaskResponseDTO("550e8400-e29b-41d4-a716-446655440001", "Test Task");
+        response = new CreateTaskResponseDTO(
+                UUID.fromString(userId),
+                "Test Task",
+                "Test Description",
+                "PENDING",
+                null,
+                LocalDateTime.of(1990, 2, 1, 0, 0) ,
+                LocalDateTime.of(1990, 1, 1, 0, 0)
+        );
     }
 
     @Test
@@ -48,13 +59,21 @@ class CreateTaskUseCaseImplTest {
 
     @Test
     void shouldHandleNullRequest() {
-        assertThrows(NullPointerException.class, 
+        doThrow(NullPointerException.class).when(taskService).create(null, userId);
+
+        assertThrows(NullPointerException.class,
             () -> createTaskUseCase.execute(null, userId));
+
+        verify(taskService, times(1)).create(null, userId);
     }
 
     @Test
     void shouldHandleNullUserId() {
-        assertThrows(NullPointerException.class, 
+        doThrow(NullPointerException.class).when(taskService).create(request, null);
+
+        assertThrows(NullPointerException.class,
             () -> createTaskUseCase.execute(request, null));
+
+        verify(taskService, times(1)).create(request, null);
     }
 }

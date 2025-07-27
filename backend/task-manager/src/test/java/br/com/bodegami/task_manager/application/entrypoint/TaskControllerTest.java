@@ -20,7 +20,6 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -54,16 +53,18 @@ class TaskControllerTest {
 
     @BeforeEach
     void setUp() {
-        httpHeaders = new HttpHeaders();
-        when(userService.getUserIdFromToken(any(HttpHeaders.class))).thenReturn(userId);
+        httpHeaders = mock(HttpHeaders.class);
     }
 
     @Test
     void createTask_ShouldReturnCreatedTask() {
         // Arrange
-        CreateTaskRequestDTO request = new CreateTaskRequestDTO("Test Task", "Description", "PENDING");
-        CreateTaskResponseDTO response = new CreateTaskResponseDTO(taskId.toString(), "Test Task");
-        when(createTaskUseCase.execute(any(), any())).thenReturn(response);
+        var request = new CreateTaskRequestDTO("Test Task", "Description", "PENDING");
+        var response = new CreateTaskResponseDTO(taskId, "Test Task", "Description", "PENDING",
+                null, null, null);
+
+        when(userService.getUserIdFromToken(httpHeaders)).thenReturn(userId);
+        when(createTaskUseCase.execute(request, userId)).thenReturn(response);
 
         // Act
         ResponseEntity<CreateTaskResponseDTO> result = taskController.create(httpHeaders, request);
@@ -72,15 +73,15 @@ class TaskControllerTest {
         assertNotNull(result);
         assertEquals(HttpStatus.OK, result.getStatusCode());
         assertEquals(response, result.getBody());
-        verify(createTaskUseCase).execute(eq(request), eq(userId));
+        verify(createTaskUseCase).execute(request, userId);
     }
 
     @Test
     void getTaskById_ShouldReturnTask() {
         // Arrange
         TaskDetailsResponse expectedResponse = new TaskDetailsResponse(
-                taskId.toString(), "Test Task", "Description", "PENDING", 
-                null, null, null, null, null);
+                taskId, "Test Task", "Description", "PENDING",
+                null, null, null);
         when(getTaskByIdUseCase.execute(taskId)).thenReturn(expectedResponse);
 
         // Act
@@ -98,8 +99,10 @@ class TaskControllerTest {
         // Arrange
         Map<String, String> params = Map.of("status", "PENDING");
         List<TaskResponseDTO> expectedTasks = List.of(
-                new TaskResponseDTO(taskId.toString(), "Task 1", "Desc 1", "PENDING", null, null, null, null)
+                new TaskResponseDTO(taskId, "Task 1", "PENDING")
         );
+
+        when(userService.getUserIdFromToken(httpHeaders)).thenReturn(userId);
         when(searchTasksUseCase.execute(userId, params)).thenReturn(expectedTasks);
 
         // Act
@@ -115,10 +118,9 @@ class TaskControllerTest {
     @Test
     void updateTask_ShouldReturnUpdatedTask() {
         // Arrange
-        UpdateTaskRequestDTO request = new UpdateTaskRequestDTO("Updated Task", "Updated Desc", "IN_PROGRESS");
-        TaskDetailsResponse expectedResponse = new TaskDetailsResponse(
-                taskId.toString(), "Updated Task", "Updated Desc", "IN_PROGRESS", 
-                null, null, null, null, null);
+        var request = new UpdateTaskRequestDTO("Updated Task", "Updated Desc", "IN_PROGRESS", "1990-01-01");
+        var expectedResponse = new TaskDetailsResponse(taskId, "Updated Task", "Updated Desc", "IN_PROGRESS",
+                null, null, null);
         when(updateTaskUseCase.execute(taskId, request)).thenReturn(expectedResponse);
 
         // Act
@@ -146,8 +148,10 @@ class TaskControllerTest {
     void getAllTasks_ShouldReturnUserTasks() {
         // Arrange
         List<TaskResponseDTO> expectedTasks = List.of(
-                new TaskResponseDTO(taskId.toString(), "Task 1", "Desc 1", "PENDING", null, null, null, null)
+                new TaskResponseDTO(taskId, "Task 1", "PENDING")
         );
+
+        when(userService.getUserIdFromToken(httpHeaders)).thenReturn(userId);
         when(getAllTasksUseCase.execute(UUID.fromString(userId))).thenReturn(expectedTasks);
 
         // Act
@@ -163,9 +167,10 @@ class TaskControllerTest {
     @Test
     void getComments_ShouldReturnTaskComments() {
         // Arrange
+
         List<TaskCommentResponseDTO> expectedComments = List.of(
                 new TaskCommentResponseDTO(
-                        UUID.randomUUID().toString(),
+                        UUID.randomUUID(),
                         "Test comment",
                         "user@example.com",
                         LocalDateTime.now()
@@ -188,11 +193,13 @@ class TaskControllerTest {
         // Arrange
         TaskCommentRequestDTO request = new TaskCommentRequestDTO("New comment", taskId.toString());
         TaskCommentResponseDTO expectedResponse = new TaskCommentResponseDTO(
-                UUID.randomUUID().toString(),
+                UUID.randomUUID(),
                 "New comment",
                 "user@example.com",
                 LocalDateTime.now()
         );
+
+        when(userService.getUserIdFromToken(httpHeaders)).thenReturn(userId);
         when(addTaskCommentUseCase.execute(any(UUID.class), any())).thenReturn(expectedResponse);
 
         // Act

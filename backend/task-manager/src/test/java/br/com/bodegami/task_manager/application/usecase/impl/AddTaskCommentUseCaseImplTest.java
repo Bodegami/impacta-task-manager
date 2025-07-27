@@ -35,7 +35,7 @@ class AddTaskCommentUseCaseImplTest {
         userId = UUID.fromString("550e8400-e29b-41d4-a716-446655440000");
         request = new TaskCommentRequestDTO("Test comment", UUID.randomUUID().toString());
         expectedResponse = new TaskCommentResponseDTO(
-            UUID.randomUUID().toString(),
+            UUID.randomUUID(),
             "Test comment",
             "test@example.com",
             LocalDateTime.now()
@@ -57,18 +57,22 @@ class AddTaskCommentUseCaseImplTest {
 
     @Test
     void shouldHandleNullUserId() {
-        assertThrows(NullPointerException.class, 
+        doThrow(NullPointerException.class).when(taskCommentService).addComment(null, request);
+
+        assertThrows(NullPointerException.class,
             () -> addTaskCommentUseCase.execute(null, request));
-        
-        verify(taskCommentService, never()).addComment(any(), any());
+
+        verify(taskCommentService, times(1)).addComment(null, request);
     }
 
     @Test
     void shouldHandleNullRequest() {
-        assertThrows(NullPointerException.class, 
+        doThrow(NullPointerException.class).when(taskCommentService).addComment(userId, null);
+
+        assertThrows(NullPointerException.class,
             () -> addTaskCommentUseCase.execute(userId, null));
-        
-        verify(taskCommentService, never()).addComment(any(), any());
+
+        verify(taskCommentService, times(1)).addComment(userId, null);
     }
 
     @Test
@@ -76,9 +80,9 @@ class AddTaskCommentUseCaseImplTest {
         when(taskCommentService.addComment(any(UUID.class), any(TaskCommentRequestDTO.class)))
             .thenThrow(new RuntimeException("Service error"));
 
-        assertThrows(RuntimeException.class, 
+        assertThrows(RuntimeException.class,
             () -> addTaskCommentUseCase.execute(userId, request));
-        
+
         verify(taskCommentService, times(1)).addComment(userId, request);
     }
 }

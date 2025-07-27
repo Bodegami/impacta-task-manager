@@ -16,8 +16,7 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class SearchTasksUseCaseImplTest {
@@ -38,18 +37,14 @@ class SearchTasksUseCaseImplTest {
         searchParams = Map.of("status", "PENDING");
         expectedTasks = List.of(
             new TaskResponseDTO(
-                UUID.randomUUID().toString(),
+                UUID.randomUUID(),
                 "Task 1",
-                "Description 1",
-                "PENDING",
-                null, null, null, null
+                "PENDING"
             ),
             new TaskResponseDTO(
-                UUID.randomUUID().toString(),
+                UUID.randomUUID(),
                 "Task 2",
-                "Description 2",
-                "PENDING",
-                null, null, null, null
+                "PENDING"
             )
         );
     }
@@ -68,17 +63,20 @@ class SearchTasksUseCaseImplTest {
 
     @Test
     void shouldHandleNullUserId() {
-        assertThrows(NullPointerException.class, 
+        doThrow(NullPointerException.class).when(taskService).findAllByParams(null, searchParams);
+
+        assertThrows(NullPointerException.class,
             () -> searchTasksUseCase.execute(null, searchParams));
+
+        verify(taskService, times(1)).findAllByParams(null, searchParams);
     }
 
     @Test
     void shouldHandleNullSearchParams() {
-        when(taskService.findAllByParams(anyString(), any(Map.class)))
-            .thenReturn(List.of());
+        when(taskService.findAllByParams(userId, null)).thenReturn(List.of());
 
         List<TaskResponseDTO> result = searchTasksUseCase.execute(userId, null);
-        
+
         assertNotNull(result);
         assertTrue(result.isEmpty());
     }

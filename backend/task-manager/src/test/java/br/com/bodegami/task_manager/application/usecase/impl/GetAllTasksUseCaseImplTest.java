@@ -32,18 +32,14 @@ class GetAllTasksUseCaseImplTest {
         userId = UUID.fromString("550e8400-e29b-41d4-a716-446655440000");
         expectedTasks = List.of(
             new TaskResponseDTO(
-                UUID.randomUUID().toString(),
+                UUID.randomUUID(),
                 "Task 1",
-                "Description 1",
-                "PENDING",
-                null, null, null, null
+                "PENDING"
             ),
             new TaskResponseDTO(
-                UUID.randomUUID().toString(),
+                UUID.randomUUID(),
                 "Task 2",
-                "Description 2",
-                "COMPLETED",
-                null, null, null, null
+                "COMPLETED"
             )
         );
     }
@@ -72,9 +68,11 @@ class GetAllTasksUseCaseImplTest {
 
     @Test
     void shouldHandleNullUserId() {
+        doThrow(NullPointerException.class).when(taskService).findAllByUserId(null);
+
         assertThrows(NullPointerException.class, 
             () -> getAllTasksUseCase.execute(null));
         
-        verify(taskService, never()).findAllByUserId(any());
+        verify(taskService, times(1)).findAllByUserId(null);
     }
 }

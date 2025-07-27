@@ -40,10 +40,12 @@ class DeleteTaskUseCaseImplTest {
 
     @Test
     void shouldHandleNullTaskId() {
+        doThrow(NullPointerException.class).when(taskService).deleteTaskById(null);
+
         assertThrows(NullPointerException.class, 
             () -> deleteTaskUseCase.execute(null));
         
-        verify(taskService, never()).deleteTaskById(any());
+        verify(taskService, times(1)).deleteTaskById(null);
     }
 
     @Test

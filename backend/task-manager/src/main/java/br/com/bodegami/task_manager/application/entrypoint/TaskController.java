@@ -2,6 +2,7 @@ package br.com.bodegami.task_manager.application.entrypoint;
 
 import br.com.bodegami.task_manager.application.entrypoint.dto.*;
 import br.com.bodegami.task_manager.application.usecase.*;
+import br.com.bodegami.task_manager.domain.service.UserService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

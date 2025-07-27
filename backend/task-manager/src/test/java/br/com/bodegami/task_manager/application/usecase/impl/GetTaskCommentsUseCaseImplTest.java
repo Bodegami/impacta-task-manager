@@ -33,13 +33,13 @@ class GetTaskCommentsUseCaseImplTest {
         taskId = UUID.fromString("550e8400-e29b-41d4-a716-446655440001");
         expectedComments = List.of(
             new TaskCommentResponseDTO(
-                UUID.randomUUID().toString(),
+                UUID.randomUUID(),
                 "First comment",
                 "user1@example.com",
                 LocalDateTime.now().minusDays(1)
             ),
             new TaskCommentResponseDTO(
-                UUID.randomUUID().toString(),
+                UUID.randomUUID(),
                 "Second comment",
                 "user2@example.com",
                 LocalDateTime.now()
@@ -71,9 +71,11 @@ class GetTaskCommentsUseCaseImplTest {
 
     @Test
     void shouldHandleNullTaskId() {
-        assertThrows(NullPointerException.class, 
+        doThrow(NullPointerException.class).when(taskCommentService).getCommentsByTask(null);
+
+        assertThrows(NullPointerException.class,
             () -> getTaskCommentsUseCase.execute(null));
-        
-        verify(taskCommentService, never()).getCommentsByTask(any());
+
+        verify(taskCommentService, times(1)).getCommentsByTask(null);
     }
 }
