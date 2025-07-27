@@ -1,6 +1,6 @@
 package br.com.bodegami.task_manager.domain.mapper;
 
-import br.com.bodegami.task_manager.application.entrypoint.dto.TaskCommentResponseDTO;
+import br.com.bodegami.task_manager.application.entrypoint.dto.TaskCommentResponse;
 import br.com.bodegami.task_manager.domain.entity.Task;
 import br.com.bodegami.task_manager.domain.entity.TaskComment;
 import br.com.bodegami.task_manager.domain.entity.User;
@@ -23,6 +23,6 @@ public interface TaskCommentMapper {
     @Mapping(target = "comment", source = "comment")
     @Mapping(target = "userName", source = "user.name")
     @Mapping(target = "createdAt", source = "createdAt")
-    TaskCommentResponseDTO toResponseDTO(TaskComment taskComment);
+    TaskCommentResponse toResponseDTO(TaskComment taskComment);
 
 }

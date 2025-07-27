@@ -1,7 +1,7 @@
 package br.com.bodegami.task_manager.application.usecase.impl;
 
-import br.com.bodegami.task_manager.application.entrypoint.dto.CreateTaskRequestDTO;
-import br.com.bodegami.task_manager.application.entrypoint.dto.CreateTaskResponseDTO;
+import br.com.bodegami.task_manager.application.entrypoint.dto.CreateTaskRequest;
+import br.com.bodegami.task_manager.application.entrypoint.dto.CreateTaskResponse;
 import br.com.bodegami.task_manager.application.usecase.CreateTaskUseCase;
 import br.com.bodegami.task_manager.domain.service.TaskService;
 import br.com.bodegami.task_manager.domain.service.UserService;
@@ -20,7 +20,7 @@ public class CreateTaskUseCaseImpl implements CreateTaskUseCase {
     }
 
     @Override
-    public CreateTaskResponseDTO execute(CreateTaskRequestDTO request, HttpHeaders httpHeaders) {
+    public CreateTaskResponse execute(CreateTaskRequest request, HttpHeaders httpHeaders) {
         String userId = userService.getUserIdFromToken(httpHeaders);
         return taskService.create(request, userId);
     }

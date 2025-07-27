@@ -1,6 +1,6 @@
 package br.com.bodegami.task_manager.application.usecase.impl;
 
-import br.com.bodegami.task_manager.application.entrypoint.dto.UserDetailsResponseDTO;
+import br.com.bodegami.task_manager.application.entrypoint.dto.UserDetailsResponse;
 import br.com.bodegami.task_manager.application.usecase.GetUserByIdUseCase;
 import br.com.bodegami.task_manager.domain.service.UserService;
 import org.springframework.stereotype.Component;
@@ -17,7 +17,7 @@ public class GetUserByIdUseCaseImpl implements GetUserByIdUseCase {
     }
 
     @Override
-    public UserDetailsResponseDTO execute(UUID id) {
+    public UserDetailsResponse execute(UUID id) {
         return userService.findById(id);
     }
 }

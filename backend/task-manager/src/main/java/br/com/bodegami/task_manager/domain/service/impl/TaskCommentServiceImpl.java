@@ -1,7 +1,7 @@
 package br.com.bodegami.task_manager.domain.service.impl;
 
-import br.com.bodegami.task_manager.application.entrypoint.dto.TaskCommentRequestDTO;
-import br.com.bodegami.task_manager.application.entrypoint.dto.TaskCommentResponseDTO;
+import br.com.bodegami.task_manager.application.entrypoint.dto.TaskCommentRequest;
+import br.com.bodegami.task_manager.application.entrypoint.dto.TaskCommentResponse;
 import br.com.bodegami.task_manager.domain.entity.Task;
 import br.com.bodegami.task_manager.domain.entity.TaskComment;
 import br.com.bodegami.task_manager.domain.entity.User;
@@ -31,13 +31,13 @@ public class TaskCommentServiceImpl implements TaskCommentService {
     @Autowired
     private TaskCommentMapper taskCommentMapper;
 
-    public List<TaskCommentResponseDTO> getCommentsByTask(UUID taskId) {
+    public List<TaskCommentResponse> getCommentsByTask(UUID taskId) {
         return commentRepo.findByTaskIdOrderByCreatedAtAsc(taskId).stream()
                 .map(taskCommentMapper::toResponseDTO)
                 .toList();
     }
 
-    public TaskCommentResponseDTO addComment(UUID userId, TaskCommentRequestDTO dto) {
+    public TaskCommentResponse addComment(UUID userId, TaskCommentRequest dto) {
         if (dto == null) {
             throw new RuntimeException("Payload invalido");
         }

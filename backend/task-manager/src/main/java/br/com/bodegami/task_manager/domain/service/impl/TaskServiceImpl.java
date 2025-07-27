@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
-import java.util.function.Function;
 
 @Service
 public class TaskServiceImpl implements TaskService {
@@ -24,21 +23,21 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Transactional
-    public CreateTaskResponseDTO create(CreateTaskRequestDTO request, String userId) {
+    public CreateTaskResponse create(CreateTaskRequest request, String userId) {
 
         Task entity = mapper.toDomain(request, userId);
 
         Task result = repository.save(entity);
 
-        CreateTaskResponseDTO response = mapper.toCreateResponse(result);
+        CreateTaskResponse response = mapper.toCreateResponse(result);
 
         return response;
     }
 
     @Transactional(readOnly = true)
-    public List<TaskResponseDTO> findAllByUserId(UUID userId) {
+    public List<TaskResponse> findAllByUserId(UUID userId) {
 
-        List<TaskResponseDTO> result = repository.findAllByUserId(userId)
+        List<TaskResponse> result = repository.findAllByUserId(userId)
                 .stream()
                 .map(mapper::toFindAllResponse)
                 .toList();
@@ -57,7 +56,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Transactional
-    public TaskDetailsResponse updateTask(UUID taskId, UpdateTaskRequestDTO request) {
+    public TaskDetailsResponse updateTask(UUID taskId, UpdateTaskRequest request) {
 
         Task task = repository.findById(taskId)
                 .orElseThrow(() -> new IllegalArgumentException("Task not found"));
@@ -70,7 +69,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Transactional(readOnly = true)
-    public List<TaskResponseDTO> findAllByParams(String userId, Map<String, String> params) {
+    public List<TaskResponse> findAllByParams(String userId, Map<String, String> params) {
 
         UUID userUuid = UUID.fromString(userId);
 
@@ -82,7 +81,7 @@ public class TaskServiceImpl implements TaskService {
         repository.deleteById(taskId);
     }
 
-    private List<TaskResponseDTO> searchByParam(UUID userUuid, Map<String, String> params) {
+    private List<TaskResponse> searchByParam(UUID userUuid, Map<String, String> params) {
         if (params == null || params.isEmpty()) {
             return findAllByUserId(userUuid);
         }
@@ -103,7 +102,7 @@ public class TaskServiceImpl implements TaskService {
         };
     }
 
-    private List<TaskResponseDTO> toListResponseDto(List<Task> tasks) {
+    private List<TaskResponse> toListResponseDto(List<Task> tasks) {
         return tasks.stream()
                 .map(mapper::toFindAllResponse)
                 .toList();

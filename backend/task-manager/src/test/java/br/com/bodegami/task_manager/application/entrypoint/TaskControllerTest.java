@@ -59,14 +59,14 @@ class TaskControllerTest {
     @Test
     void createTask_ShouldReturnCreatedTask() {
         // Arrange
-        var request = new CreateTaskRequestDTO("Test Task", "Description", "PENDING");
-        var response = new CreateTaskResponseDTO(taskId, "Test Task", "Description", "PENDING",
+        var request = new CreateTaskRequest("Test Task", "Description", "PENDING");
+        var response = new CreateTaskResponse(taskId, "Test Task", "Description", "PENDING",
                 UUID.fromString(userId), null, null);
 
         when(createTaskUseCase.execute(request, httpHeaders)).thenReturn(response);
 
         // Act
-        ResponseEntity<CreateTaskResponseDTO> result = taskController.create(httpHeaders, request);
+        ResponseEntity<CreateTaskResponse> result = taskController.create(httpHeaders, request);
 
         // Assert
         assertNotNull(result);
@@ -97,14 +97,14 @@ class TaskControllerTest {
     void searchTasks_ShouldReturnMatchingTasks() {
         // Arrange
         Map<String, String> params = Map.of("status", "PENDING");
-        List<TaskResponseDTO> expectedTasks = List.of(
-                new TaskResponseDTO(taskId, "Task 1", "PENDING")
+        List<TaskResponse> expectedTasks = List.of(
+                new TaskResponse(taskId, "Task 1", "PENDING")
         );
 
         when(searchTasksUseCase.execute(httpHeaders, params)).thenReturn(expectedTasks);
 
         // Act
-        ResponseEntity<List<TaskResponseDTO>> result = taskController.findAllByParam(httpHeaders, params);
+        ResponseEntity<List<TaskResponse>> result = taskController.findAllByParam(httpHeaders, params);
 
         // Assert
         assertNotNull(result);
@@ -116,7 +116,7 @@ class TaskControllerTest {
     @Test
     void updateTask_ShouldReturnUpdatedTask() {
         // Arrange
-        var request = new UpdateTaskRequestDTO("Updated Task", "Updated Desc", "IN_PROGRESS", "1990-01-01");
+        var request = new UpdateTaskRequest("Updated Task", "Updated Desc", "IN_PROGRESS", "1990-01-01");
         var expectedResponse = new TaskDetailsResponse(taskId, "Updated Task", "Updated Desc", "IN_PROGRESS",
                 null, null, null);
         when(updateTaskUseCase.execute(taskId, request)).thenReturn(expectedResponse);
@@ -146,14 +146,14 @@ class TaskControllerTest {
     @Test
     void getAllTasks_ShouldReturnUserTasks() {
         // Arrange
-        List<TaskResponseDTO> expectedTasks = List.of(
-                new TaskResponseDTO(taskId, "Task 1", "PENDING")
+        List<TaskResponse> expectedTasks = List.of(
+                new TaskResponse(taskId, "Task 1", "PENDING")
         );
 
         when(getAllTasksUseCase.execute(httpHeaders)).thenReturn(expectedTasks);
 
         // Act
-        ResponseEntity<List<TaskResponseDTO>> result = taskController.findAllTaskByUserId(httpHeaders);
+        ResponseEntity<List<TaskResponse>> result = taskController.findAllTaskByUserId(httpHeaders);
 
         // Assert
         assertNotNull(result);
@@ -166,8 +166,8 @@ class TaskControllerTest {
     void getComments_ShouldReturnTaskComments() {
         // Arrange
 
-        List<TaskCommentResponseDTO> expectedComments = List.of(
-                new TaskCommentResponseDTO(
+        List<TaskCommentResponse> expectedComments = List.of(
+                new TaskCommentResponse(
                         UUID.randomUUID(),
                         "Test comment",
                         "user@example.com",
@@ -177,7 +177,7 @@ class TaskControllerTest {
         when(getTaskCommentsUseCase.execute(taskId)).thenReturn(expectedComments);
 
         // Act
-        ResponseEntity<List<TaskCommentResponseDTO>> result = taskController.getComments(taskId);
+        ResponseEntity<List<TaskCommentResponse>> result = taskController.getComments(taskId);
 
         // Assert
         assertNotNull(result);
@@ -189,8 +189,8 @@ class TaskControllerTest {
     @Test
     void addComment_ShouldReturnCreatedComment() {
         // Arrange
-        TaskCommentRequestDTO request = new TaskCommentRequestDTO("New comment", taskId.toString());
-        TaskCommentResponseDTO expectedResponse = new TaskCommentResponseDTO(
+        TaskCommentRequest request = new TaskCommentRequest("New comment", taskId.toString());
+        TaskCommentResponse expectedResponse = new TaskCommentResponse(
                 UUID.randomUUID(),
                 "New comment",
                 "user@example.com",
@@ -200,7 +200,7 @@ class TaskControllerTest {
         when(addTaskCommentUseCase.execute(httpHeaders, request)).thenReturn(expectedResponse);
 
         // Act
-        ResponseEntity<TaskCommentResponseDTO> result = taskController.addComment(request, httpHeaders);
+        ResponseEntity<TaskCommentResponse> result = taskController.addComment(request, httpHeaders);
 
         // Assert
         assertNotNull(result);

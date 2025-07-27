@@ -1,7 +1,7 @@
 package br.com.bodegami.task_manager.application.usecase.impl;
 
-import br.com.bodegami.task_manager.application.entrypoint.dto.TaskCommentRequestDTO;
-import br.com.bodegami.task_manager.application.entrypoint.dto.TaskCommentResponseDTO;
+import br.com.bodegami.task_manager.application.entrypoint.dto.TaskCommentRequest;
+import br.com.bodegami.task_manager.application.entrypoint.dto.TaskCommentResponse;
 import br.com.bodegami.task_manager.application.usecase.AddTaskCommentUseCase;
 import br.com.bodegami.task_manager.domain.service.TaskCommentService;
 import br.com.bodegami.task_manager.domain.service.UserService;
@@ -22,7 +22,7 @@ public class AddTaskCommentUseCaseImpl implements AddTaskCommentUseCase {
     }
 
     @Override
-    public TaskCommentResponseDTO execute(HttpHeaders httpHeaders, TaskCommentRequestDTO request) {
+    public TaskCommentResponse execute(HttpHeaders httpHeaders, TaskCommentRequest request) {
         String userId = userService.getUserIdFromToken(httpHeaders);
         return taskCommentService.addComment(UUID.fromString(userId), request);
     }

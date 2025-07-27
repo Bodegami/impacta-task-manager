@@ -1,6 +1,6 @@
 package br.com.bodegami.task_manager.application.usecase.impl;
 
-import br.com.bodegami.task_manager.application.entrypoint.dto.TaskResponseDTO;
+import br.com.bodegami.task_manager.application.entrypoint.dto.TaskResponse;
 import br.com.bodegami.task_manager.application.usecase.BaseUseCaseTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,7 +24,7 @@ class SearchTasksUseCaseImplTest extends BaseUseCaseTest {
 
     private final String userId = "550e8400-e29b-41d4-a716-446655440000";
     private final Map<String, String> searchParams = Map.of("status", "PENDING");
-    private final List<TaskResponseDTO> expectedTasks = getExpectedTasks();
+    private final List<TaskResponse> expectedTasks = getExpectedTasks();
     private final HttpHeaders httpHeaders = mock(HttpHeaders.class);
 
     @Test
@@ -32,7 +32,7 @@ class SearchTasksUseCaseImplTest extends BaseUseCaseTest {
         when(userService.getUserIdFromToken(any(HttpHeaders.class))).thenReturn(userId);
         when(taskService.findAllByParams(userId, searchParams)).thenReturn(expectedTasks);
 
-        List<TaskResponseDTO> result = searchTasksUseCase.execute(httpHeaders, searchParams);
+        List<TaskResponse> result = searchTasksUseCase.execute(httpHeaders, searchParams);
 
         assertNotNull(result);
         assertEquals(2, result.size());
@@ -57,7 +57,7 @@ class SearchTasksUseCaseImplTest extends BaseUseCaseTest {
         when(userService.getUserIdFromToken(httpHeaders)).thenReturn(userId);
         when(taskService.findAllByParams(userId, null)).thenReturn(List.of());
 
-        List<TaskResponseDTO> result = searchTasksUseCase.execute(httpHeaders, null);
+        List<TaskResponse> result = searchTasksUseCase.execute(httpHeaders, null);
 
         assertNotNull(result);
         assertTrue(result.isEmpty());
@@ -65,14 +65,14 @@ class SearchTasksUseCaseImplTest extends BaseUseCaseTest {
         verify(taskService, times(1)).findAllByParams(userId, null);
     }
 
-    private List<TaskResponseDTO> getExpectedTasks() {
+    private List<TaskResponse> getExpectedTasks() {
         return List.of(
-                new TaskResponseDTO(
+                new TaskResponse(
                         UUID.randomUUID(),
                         "Task 1",
                         "PENDING"
                 ),
-                new TaskResponseDTO(
+                new TaskResponse(
                         UUID.randomUUID(),
                         "Task 2",
                         "PENDING"

@@ -1,6 +1,6 @@
 package br.com.bodegami.task_manager.application.usecase.impl;
 
-import br.com.bodegami.task_manager.application.entrypoint.dto.TaskResponseDTO;
+import br.com.bodegami.task_manager.application.entrypoint.dto.TaskResponse;
 import br.com.bodegami.task_manager.application.usecase.GetAllTasksUseCase;
 import br.com.bodegami.task_manager.domain.service.TaskService;
 import br.com.bodegami.task_manager.domain.service.UserService;
@@ -22,7 +22,7 @@ public class GetAllTasksUseCaseImpl implements GetAllTasksUseCase {
     }
 
     @Override
-    public List<TaskResponseDTO> execute(HttpHeaders httpHeaders) {
+    public List<TaskResponse> execute(HttpHeaders httpHeaders) {
         String user = userService.getUserIdFromToken(httpHeaders);
         return taskService.findAllByUserId(UUID.fromString(user));
     }

@@ -1,11 +1,9 @@
 package br.com.bodegami.task_manager.application.usecase;
 
-import br.com.bodegami.task_manager.application.entrypoint.dto.TaskCommentRequestDTO;
-import br.com.bodegami.task_manager.application.entrypoint.dto.TaskCommentResponseDTO;
+import br.com.bodegami.task_manager.application.entrypoint.dto.TaskCommentRequest;
+import br.com.bodegami.task_manager.application.entrypoint.dto.TaskCommentResponse;
 import org.springframework.http.HttpHeaders;
 
-import java.util.UUID;
-
 public interface AddTaskCommentUseCase {
-    TaskCommentResponseDTO execute(HttpHeaders httpHeaders, TaskCommentRequestDTO request);
+    TaskCommentResponse execute(HttpHeaders httpHeaders, TaskCommentRequest request);
 }

@@ -7,15 +7,15 @@ import java.util.Map;
 import java.util.UUID;
 
 public interface TaskService {
-    CreateTaskResponseDTO create(CreateTaskRequestDTO request, String userId);
+    CreateTaskResponse create(CreateTaskRequest request, String userId);
 
-    List<TaskResponseDTO> findAllByUserId(UUID userId);
+    List<TaskResponse> findAllByUserId(UUID userId);
 
     TaskDetailsResponse findByTaskId(UUID userId);
 
     void deleteTaskById(UUID taskId);
 
-    TaskDetailsResponse updateTask(UUID taskId, UpdateTaskRequestDTO request);
+    TaskDetailsResponse updateTask(UUID taskId, UpdateTaskRequest request);
 
-    List<TaskResponseDTO> findAllByParams(String userId, Map<String, String> params);
+    List<TaskResponse> findAllByParams(String userId, Map<String, String> params);
 }

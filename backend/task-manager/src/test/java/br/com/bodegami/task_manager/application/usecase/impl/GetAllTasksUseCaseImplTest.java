@@ -1,13 +1,10 @@
 package br.com.bodegami.task_manager.application.usecase.impl;
 
-import br.com.bodegami.task_manager.application.entrypoint.dto.TaskResponseDTO;
+import br.com.bodegami.task_manager.application.entrypoint.dto.TaskResponse;
 import br.com.bodegami.task_manager.application.usecase.BaseUseCaseTest;
-import br.com.bodegami.task_manager.domain.service.TaskService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpHeaders;
 
@@ -24,7 +21,7 @@ class GetAllTasksUseCaseImplTest extends BaseUseCaseTest {
     private GetAllTasksUseCaseImpl getAllTasksUseCase;
 
     private final UUID userId = UUID.fromString("550e8400-e29b-41d4-a716-446655440000");
-    private final List<TaskResponseDTO> expectedTasks = getExpectedTasks();
+    private final List<TaskResponse> expectedTasks = getExpectedTasks();
     private final HttpHeaders httpHeaders = mock(HttpHeaders.class);
 
     @Test
@@ -32,7 +29,7 @@ class GetAllTasksUseCaseImplTest extends BaseUseCaseTest {
         when(userService.getUserIdFromToken(httpHeaders)).thenReturn(userId.toString());
         when(taskService.findAllByUserId(userId)).thenReturn(expectedTasks);
 
-        List<TaskResponseDTO> result = getAllTasksUseCase.execute(httpHeaders);
+        List<TaskResponse> result = getAllTasksUseCase.execute(httpHeaders);
 
         assertNotNull(result);
         assertEquals(2, result.size());
@@ -45,7 +42,7 @@ class GetAllTasksUseCaseImplTest extends BaseUseCaseTest {
         when(userService.getUserIdFromToken(httpHeaders)).thenReturn(userId.toString());
         when(taskService.findAllByUserId(userId)).thenReturn(List.of());
 
-        List<TaskResponseDTO> result = getAllTasksUseCase.execute(httpHeaders);
+        List<TaskResponse> result = getAllTasksUseCase.execute(httpHeaders);
 
         assertNotNull(result);
         assertTrue(result.isEmpty());
@@ -66,14 +63,14 @@ class GetAllTasksUseCaseImplTest extends BaseUseCaseTest {
         verify(taskService, never()).findAllByUserId(null);
     }
 
-    private List<TaskResponseDTO> getExpectedTasks() {
+    private List<TaskResponse> getExpectedTasks() {
         return List.of(
-                new TaskResponseDTO(
+                new TaskResponse(
                         UUID.randomUUID(),
                         "Task 1",
                         "PENDING"
                 ),
-                new TaskResponseDTO(
+                new TaskResponse(
                         UUID.randomUUID(),
                         "Task 2",
                         "COMPLETED"

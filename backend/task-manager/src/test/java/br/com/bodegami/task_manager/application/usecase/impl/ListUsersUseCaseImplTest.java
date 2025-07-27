@@ -1,6 +1,6 @@
 package br.com.bodegami.task_manager.application.usecase.impl;
 
-import br.com.bodegami.task_manager.application.entrypoint.dto.UserResponseDTO;
+import br.com.bodegami.task_manager.application.entrypoint.dto.UserResponse;
 import br.com.bodegami.task_manager.application.usecase.BaseUseCaseTest;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -17,7 +17,7 @@ class ListUsersUseCaseImplTest extends BaseUseCaseTest {
     @InjectMocks
     private ListUsersUseCaseImpl listUsersUseCase;
 
-    private final List<UserResponseDTO> userList = getUserResponseDTOList();
+    private final List<UserResponse> userList = getUserResponseDTOList();
 
     @Test
     void shouldReturnListOfUsers() {
@@ -25,7 +25,7 @@ class ListUsersUseCaseImplTest extends BaseUseCaseTest {
         when(userService.findAll()).thenReturn(userList);
 
         // Act
-        List<UserResponseDTO> result = listUsersUseCase.execute();
+        List<UserResponse> result = listUsersUseCase.execute();
 
         // Assert
         assertNotNull(result);
@@ -42,7 +42,7 @@ class ListUsersUseCaseImplTest extends BaseUseCaseTest {
         when(userService.findAll()).thenReturn(List.of());
 
         // Act
-        List<UserResponseDTO> result = listUsersUseCase.execute();
+        List<UserResponse> result = listUsersUseCase.execute();
 
         // Assert
         assertNotNull(result);
@@ -50,13 +50,13 @@ class ListUsersUseCaseImplTest extends BaseUseCaseTest {
         verify(userService, times(1)).findAll();
     }
 
-    private List<UserResponseDTO> getUserResponseDTOList() {
+    private List<UserResponse> getUserResponseDTOList() {
         return Arrays.asList(
-                new UserResponseDTO(
+                new UserResponse(
                         UUID.randomUUID(),
                         "John Doe"
                 ),
-                new UserResponseDTO(
+                new UserResponse(
                         UUID.randomUUID(),
                         "Jane Smith"
                 )

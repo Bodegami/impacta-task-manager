@@ -1,6 +1,6 @@
 package br.com.bodegami.task_manager.application.usecase.impl;
 
-import br.com.bodegami.task_manager.application.entrypoint.dto.TaskCommentResponseDTO;
+import br.com.bodegami.task_manager.application.entrypoint.dto.TaskCommentResponse;
 import br.com.bodegami.task_manager.application.usecase.GetTaskCommentsUseCase;
 import br.com.bodegami.task_manager.domain.service.TaskCommentService;
 import org.springframework.stereotype.Component;
@@ -18,7 +18,7 @@ public class GetTaskCommentsUseCaseImpl implements GetTaskCommentsUseCase {
     }
 
     @Override
-    public List<TaskCommentResponseDTO> execute(UUID taskId) {
+    public List<TaskCommentResponse> execute(UUID taskId) {
         return taskCommentService.getCommentsByTask(taskId);
     }
 }

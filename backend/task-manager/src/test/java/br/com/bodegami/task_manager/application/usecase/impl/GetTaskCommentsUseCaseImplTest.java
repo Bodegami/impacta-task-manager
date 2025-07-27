@@ -1,6 +1,6 @@
 package br.com.bodegami.task_manager.application.usecase.impl;
 
-import br.com.bodegami.task_manager.application.entrypoint.dto.TaskCommentResponseDTO;
+import br.com.bodegami.task_manager.application.entrypoint.dto.TaskCommentResponse;
 import br.com.bodegami.task_manager.application.usecase.BaseUseCaseTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,13 +21,13 @@ class GetTaskCommentsUseCaseImplTest extends BaseUseCaseTest {
     private GetTaskCommentsUseCaseImpl getTaskCommentsUseCase;
 
     private final UUID taskId = UUID.fromString("550e8400-e29b-41d4-a716-446655440001");
-    private final List<TaskCommentResponseDTO> expectedComments = getTaskCommentResponseDTOList();
+    private final List<TaskCommentResponse> expectedComments = getTaskCommentResponseDTOList();
 
     @Test
     void shouldGetTaskCommentsSuccessfully() {
         when(taskCommentService.getCommentsByTask(taskId)).thenReturn(expectedComments);
 
-        List<TaskCommentResponseDTO> result = getTaskCommentsUseCase.execute(taskId);
+        List<TaskCommentResponse> result = getTaskCommentsUseCase.execute(taskId);
 
         assertNotNull(result);
         assertEquals(2, result.size());
@@ -38,7 +38,7 @@ class GetTaskCommentsUseCaseImplTest extends BaseUseCaseTest {
     void shouldReturnEmptyListWhenNoCommentsFound() {
         when(taskCommentService.getCommentsByTask(taskId)).thenReturn(List.of());
 
-        List<TaskCommentResponseDTO> result = getTaskCommentsUseCase.execute(taskId);
+        List<TaskCommentResponse> result = getTaskCommentsUseCase.execute(taskId);
 
         assertNotNull(result);
         assertTrue(result.isEmpty());
@@ -55,15 +55,15 @@ class GetTaskCommentsUseCaseImplTest extends BaseUseCaseTest {
         verify(taskCommentService, times(1)).getCommentsByTask(null);
     }
 
-    private List<TaskCommentResponseDTO> getTaskCommentResponseDTOList() {
+    private List<TaskCommentResponse> getTaskCommentResponseDTOList() {
         return List.of(
-                new TaskCommentResponseDTO(
+                new TaskCommentResponse(
                         UUID.randomUUID(),
                         "First comment",
                         "user1@example.com",
                         LocalDateTime.now().minusDays(1)
                 ),
-                new TaskCommentResponseDTO(
+                new TaskCommentResponse(
                         UUID.randomUUID(),
                         "Second comment",
                         "user2@example.com",

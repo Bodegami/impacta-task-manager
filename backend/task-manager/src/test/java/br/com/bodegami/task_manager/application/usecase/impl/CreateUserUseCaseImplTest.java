@@ -1,7 +1,7 @@
 package br.com.bodegami.task_manager.application.usecase.impl;
 
-import br.com.bodegami.task_manager.application.entrypoint.dto.CreateUserRequestDTO;
-import br.com.bodegami.task_manager.application.entrypoint.dto.CreateUserResponseDTO;
+import br.com.bodegami.task_manager.application.entrypoint.dto.CreateUserRequest;
+import br.com.bodegami.task_manager.application.entrypoint.dto.CreateUserResponse;
 import br.com.bodegami.task_manager.application.usecase.BaseUseCaseTest;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -18,16 +18,16 @@ class CreateUserUseCaseImplTest extends BaseUseCaseTest {
     @InjectMocks
     private CreateUserUseCaseImpl createUserUseCase;
 
-    private final CreateUserRequestDTO requestDTO = getUserRequestDTO();
-    private final CreateUserResponseDTO responseDTO = getUserResponseDTO();
+    private final CreateUserRequest requestDTO = getUserRequestDTO();
+    private final CreateUserResponse responseDTO = getUserResponseDTO();
 
     @Test
     void shouldCreateUserSuccessfully() {
         // Arrange
-        when(userService.create(any(CreateUserRequestDTO.class))).thenReturn(responseDTO);
+        when(userService.create(any(CreateUserRequest.class))).thenReturn(responseDTO);
 
         // Act
-        CreateUserResponseDTO result = createUserUseCase.execute(requestDTO);
+        CreateUserResponse result = createUserUseCase.execute(requestDTO);
 
         // Assert
         assertNotNull(result);
@@ -48,8 +48,8 @@ class CreateUserUseCaseImplTest extends BaseUseCaseTest {
         verify(userService, times(1)).create(null);
     }
 
-    private CreateUserRequestDTO getUserRequestDTO() {
-        return new CreateUserRequestDTO(
+    private CreateUserRequest getUserRequestDTO() {
+        return new CreateUserRequest(
                 "John Doe",
                 "john.doe@example.com",
                 "password123",
@@ -57,8 +57,8 @@ class CreateUserUseCaseImplTest extends BaseUseCaseTest {
         );
     }
 
-    private CreateUserResponseDTO getUserResponseDTO() {
-        return new CreateUserResponseDTO(
+    private CreateUserResponse getUserResponseDTO() {
+        return new CreateUserResponse(
                 UUID.randomUUID(),
                 "John Doe",
                 "john.doe@example.com",

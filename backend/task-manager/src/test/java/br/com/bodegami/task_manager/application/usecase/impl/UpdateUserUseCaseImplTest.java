@@ -1,7 +1,7 @@
 package br.com.bodegami.task_manager.application.usecase.impl;
 
-import br.com.bodegami.task_manager.application.entrypoint.dto.UpdateUserRequestDTO;
-import br.com.bodegami.task_manager.application.entrypoint.dto.UserDetailsResponseDTO;
+import br.com.bodegami.task_manager.application.entrypoint.dto.UpdateUserRequest;
+import br.com.bodegami.task_manager.application.entrypoint.dto.UserDetailsResponse;
 import br.com.bodegami.task_manager.application.usecase.BaseUseCaseTest;
 import br.com.bodegami.task_manager.domain.exception.UserNotFoundException;
 import org.junit.jupiter.api.Test;
@@ -19,17 +19,17 @@ class UpdateUserUseCaseImplTest extends BaseUseCaseTest {
     private UpdateUserUseCaseImpl updateUserUseCase;
 
     private final UUID userId = UUID.randomUUID();
-    private final UpdateUserRequestDTO updateRequest = getUserRequestDTO();;
-    private final UserDetailsResponseDTO updatedUser = getUserDetailsResponseDTO();
+    private final UpdateUserRequest updateRequest = getUserRequestDTO();;
+    private final UserDetailsResponse updatedUser = getUserDetailsResponseDTO();
 
     @Test
     void shouldUpdateUserSuccessfully() {
         // Arrange
-        when(userService.update(eq(userId), any(UpdateUserRequestDTO.class)))
+        when(userService.update(eq(userId), any(UpdateUserRequest.class)))
                 .thenReturn(updatedUser);
 
         // Act
-        UserDetailsResponseDTO result = updateUserUseCase.execute(userId, updateRequest);
+        UserDetailsResponse result = updateUserUseCase.execute(userId, updateRequest);
 
         // Assert
         assertNotNull(result);
@@ -37,7 +37,7 @@ class UpdateUserUseCaseImplTest extends BaseUseCaseTest {
         assertEquals(updateRequest.name(), result.name());
         assertEquals(updateRequest.email(), result.email());
         
-        verify(userService, times(1)).update(eq(userId), any(UpdateUserRequestDTO.class));
+        verify(userService, times(1)).update(eq(userId), any(UpdateUserRequest.class));
     }
 
     @Test
@@ -49,7 +49,7 @@ class UpdateUserUseCaseImplTest extends BaseUseCaseTest {
         assertThrows(UserNotFoundException.class, 
             () -> updateUserUseCase.execute(userId, updateRequest));
         
-        verify(userService, times(1)).update(eq(userId), any(UpdateUserRequestDTO.class));
+        verify(userService, times(1)).update(eq(userId), any(UpdateUserRequest.class));
     }
 
     @Test
@@ -63,8 +63,8 @@ class UpdateUserUseCaseImplTest extends BaseUseCaseTest {
         verify(userService, times(1)).update(userId, null);
     }
 
-    private UserDetailsResponseDTO getUserDetailsResponseDTO() {
-        return new UserDetailsResponseDTO(
+    private UserDetailsResponse getUserDetailsResponseDTO() {
+        return new UserDetailsResponse(
                 userId,
                 "John Updated",
                 "john.updated@example.com",
@@ -72,8 +72,8 @@ class UpdateUserUseCaseImplTest extends BaseUseCaseTest {
         );
     }
 
-    private UpdateUserRequestDTO getUserRequestDTO() {
-        return new UpdateUserRequestDTO(
+    private UpdateUserRequest getUserRequestDTO() {
+        return new UpdateUserRequest(
                 "John Updated",
                 "john.updated@example.com"
         );

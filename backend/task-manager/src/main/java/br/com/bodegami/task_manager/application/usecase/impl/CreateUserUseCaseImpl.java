@@ -1,7 +1,7 @@
 package br.com.bodegami.task_manager.application.usecase.impl;
 
-import br.com.bodegami.task_manager.application.entrypoint.dto.CreateUserRequestDTO;
-import br.com.bodegami.task_manager.application.entrypoint.dto.CreateUserResponseDTO;
+import br.com.bodegami.task_manager.application.entrypoint.dto.CreateUserRequest;
+import br.com.bodegami.task_manager.application.entrypoint.dto.CreateUserResponse;
 import br.com.bodegami.task_manager.application.usecase.CreateUserUseCase;
 import br.com.bodegami.task_manager.domain.service.UserService;
 import org.springframework.stereotype.Component;
@@ -16,7 +16,7 @@ public class CreateUserUseCaseImpl implements CreateUserUseCase {
     }
 
     @Override
-    public CreateUserResponseDTO execute(CreateUserRequestDTO request) {
+    public CreateUserResponse execute(CreateUserRequest request) {
         return userService.create(request);
     }
 }

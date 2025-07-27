@@ -1,7 +1,7 @@
 package br.com.bodegami.task_manager.application.usecase.impl;
 
-import br.com.bodegami.task_manager.application.entrypoint.dto.CreateTaskRequestDTO;
-import br.com.bodegami.task_manager.application.entrypoint.dto.CreateTaskResponseDTO;
+import br.com.bodegami.task_manager.application.entrypoint.dto.CreateTaskRequest;
+import br.com.bodegami.task_manager.application.entrypoint.dto.CreateTaskResponse;
 import br.com.bodegami.task_manager.application.usecase.BaseUseCaseTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,9 +21,9 @@ class CreateTaskUseCaseImplTest extends BaseUseCaseTest {
     @InjectMocks
     private CreateTaskUseCaseImpl createTaskUseCase;
 
-    private final CreateTaskRequestDTO request =
-            new CreateTaskRequestDTO("Test Task", "Test Description", "PENDING");
-    private final CreateTaskResponseDTO response = getTaskResponseDTO();
+    private final CreateTaskRequest request =
+            new CreateTaskRequest("Test Task", "Test Description", "PENDING");
+    private final CreateTaskResponse response = getTaskResponseDTO();
     private final String userId = "550e8400-e29b-41d4-a716-446655440000";
     private final HttpHeaders httpHeaders = mock(HttpHeaders.class);
 
@@ -32,7 +32,7 @@ class CreateTaskUseCaseImplTest extends BaseUseCaseTest {
         when(taskService.create(request, userId)).thenReturn(response);
         when(userService.getUserIdFromToken(httpHeaders)).thenReturn(userId);
 
-        CreateTaskResponseDTO result = createTaskUseCase.execute(request, httpHeaders);
+        CreateTaskResponse result = createTaskUseCase.execute(request, httpHeaders);
 
         assertNotNull(result);
         assertEquals(response.id(), result.id());
@@ -66,8 +66,8 @@ class CreateTaskUseCaseImplTest extends BaseUseCaseTest {
         verify(taskService, never()).create(request, null);
     }
 
-    private CreateTaskResponseDTO getTaskResponseDTO() {
-        return new CreateTaskResponseDTO(
+    private CreateTaskResponse getTaskResponseDTO() {
+        return new CreateTaskResponse(
                 UUID.fromString(userId),
                 "Test Task",
                 "Test Description",

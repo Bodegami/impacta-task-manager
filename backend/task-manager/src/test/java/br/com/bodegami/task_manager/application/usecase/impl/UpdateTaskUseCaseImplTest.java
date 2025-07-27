@@ -1,7 +1,7 @@
 package br.com.bodegami.task_manager.application.usecase.impl;
 
 import br.com.bodegami.task_manager.application.entrypoint.dto.TaskDetailsResponse;
-import br.com.bodegami.task_manager.application.entrypoint.dto.UpdateTaskRequestDTO;
+import br.com.bodegami.task_manager.application.entrypoint.dto.UpdateTaskRequest;
 import br.com.bodegami.task_manager.application.usecase.BaseUseCaseTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,7 +26,7 @@ class UpdateTaskUseCaseImplTest extends BaseUseCaseTest {
     void testExecute_shouldUpdateTask() {
         // Arrange
         UUID taskId = UUID.randomUUID();
-        UpdateTaskRequestDTO request = new UpdateTaskRequestDTO("Updated Task", "Updated Description",
+        UpdateTaskRequest request = new UpdateTaskRequest("Updated Task", "Updated Description",
                 "status", "1990-01-01");
         TaskDetailsResponse expectedResponse = new TaskDetailsResponse(
                 taskId,

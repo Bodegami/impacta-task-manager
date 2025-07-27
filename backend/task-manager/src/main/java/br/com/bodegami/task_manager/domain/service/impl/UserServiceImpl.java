@@ -66,7 +66,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public CreateUserResponseDTO create(CreateUserRequestDTO requestDTO) {
+    public CreateUserResponse create(CreateUserRequest requestDTO) {
 
         try {
 
@@ -89,13 +89,13 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    private String getEncodedPassword(CreateUserRequestDTO requestDTO) {
+    private String getEncodedPassword(CreateUserRequest requestDTO) {
         return securityConfiguration.passwordEncoder().encode(requestDTO.password());
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<UserResponseDTO> findAll() {
+    public List<UserResponse> findAll() {
 
         try {
             return userRepository.findAll().stream()
@@ -109,7 +109,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public UserDetailsResponseDTO findById(UUID id) {
+    public UserDetailsResponse findById(UUID id) {
 
         try {
             return userRepository.findById(id)
@@ -122,7 +122,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserDetailsResponseDTO update(UUID id, UpdateUserRequestDTO request) {
+    public UserDetailsResponse update(UUID id, UpdateUserRequest request) {
 
         try {
             User user = userRepository.findById(id)

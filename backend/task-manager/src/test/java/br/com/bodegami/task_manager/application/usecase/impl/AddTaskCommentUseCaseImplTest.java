@@ -1,7 +1,7 @@
 package br.com.bodegami.task_manager.application.usecase.impl;
 
-import br.com.bodegami.task_manager.application.entrypoint.dto.TaskCommentRequestDTO;
-import br.com.bodegami.task_manager.application.entrypoint.dto.TaskCommentResponseDTO;
+import br.com.bodegami.task_manager.application.entrypoint.dto.TaskCommentRequest;
+import br.com.bodegami.task_manager.application.entrypoint.dto.TaskCommentResponse;
 import br.com.bodegami.task_manager.application.usecase.BaseUseCaseTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,8 +22,8 @@ class AddTaskCommentUseCaseImplTest extends BaseUseCaseTest {
     private AddTaskCommentUseCaseImpl addTaskCommentUseCase;
 
     private final UUID userId = UUID.fromString("550e8400-e29b-41d4-a716-446655440000");
-    private final TaskCommentRequestDTO request = new TaskCommentRequestDTO("Test comment", UUID.randomUUID().toString());
-    private final TaskCommentResponseDTO expectedResponse = getTaskCommentResponseDTO();
+    private final TaskCommentRequest request = new TaskCommentRequest("Test comment", UUID.randomUUID().toString());
+    private final TaskCommentResponse expectedResponse = getTaskCommentResponseDTO();
     private final HttpHeaders httpHeaders = mock(HttpHeaders.class);
 
     @Test
@@ -31,7 +31,7 @@ class AddTaskCommentUseCaseImplTest extends BaseUseCaseTest {
         when(userService.getUserIdFromToken(httpHeaders)).thenReturn(userId.toString());
         when(taskCommentService.addComment(userId, request)).thenReturn(expectedResponse);
 
-        TaskCommentResponseDTO result = addTaskCommentUseCase.execute(httpHeaders, request);
+        TaskCommentResponse result = addTaskCommentUseCase.execute(httpHeaders, request);
 
         assertNotNull(result);
         assertEquals(expectedResponse.id(), result.id());
@@ -80,8 +80,8 @@ class AddTaskCommentUseCaseImplTest extends BaseUseCaseTest {
         verify(taskCommentService, times(1)).addComment(userId, request);
     }
 
-    private TaskCommentResponseDTO getTaskCommentResponseDTO() {
-        return new TaskCommentResponseDTO(
+    private TaskCommentResponse getTaskCommentResponseDTO() {
+        return new TaskCommentResponse(
                 UUID.randomUUID(),
                 "Test comment",
                 "test@example.com",

@@ -1,6 +1,6 @@
 package br.com.bodegami.task_manager.application.usecase.impl;
 
-import br.com.bodegami.task_manager.application.entrypoint.dto.UserDetailsResponseDTO;
+import br.com.bodegami.task_manager.application.entrypoint.dto.UserDetailsResponse;
 import br.com.bodegami.task_manager.application.usecase.BaseUseCaseTest;
 import br.com.bodegami.task_manager.domain.exception.UserNotFoundException;
 import org.junit.jupiter.api.Test;
@@ -18,7 +18,7 @@ class GetUserByIdUseCaseImplTest extends BaseUseCaseTest {
     private GetUserByIdUseCaseImpl getUserByIdUseCase;
 
     private final UUID userId = UUID.randomUUID();
-    private final UserDetailsResponseDTO userDetails = getUserDetailsResponseDTO();
+    private final UserDetailsResponse userDetails = getUserDetailsResponseDTO();
 
     @Test
     void shouldGetUserByIdSuccessfully() {
@@ -26,7 +26,7 @@ class GetUserByIdUseCaseImplTest extends BaseUseCaseTest {
         when(userService.findById(userId)).thenReturn(userDetails);
 
         // Act
-        UserDetailsResponseDTO result = getUserByIdUseCase.execute(userId);
+        UserDetailsResponse result = getUserByIdUseCase.execute(userId);
 
         // Assert
         assertNotNull(result);
@@ -47,8 +47,8 @@ class GetUserByIdUseCaseImplTest extends BaseUseCaseTest {
         verify(userService, times(1)).findById(userId);
     }
 
-    private UserDetailsResponseDTO getUserDetailsResponseDTO() {
-        return new UserDetailsResponseDTO(
+    private UserDetailsResponse getUserDetailsResponseDTO() {
+        return new UserDetailsResponse(
                 userId,
                 "John Doe",
                 "john.doe@example.com",

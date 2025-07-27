@@ -2,7 +2,7 @@ package br.com.bodegami.task_manager.application.entrypoint.dto;
 
 import java.util.UUID;
 
-public record CreateUserResponseDTO(
+public record CreateUserResponse(
         UUID id,
         String name,
         String email,

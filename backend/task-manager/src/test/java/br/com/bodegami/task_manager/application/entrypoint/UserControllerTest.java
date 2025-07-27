@@ -42,43 +42,43 @@ class UserControllerTest {
     private UserController userController;
 
     private UUID userId;
-    private CreateUserRequestDTO createRequest;
-    private CreateUserResponseDTO createResponse;
-    private UserResponseDTO userResponse;
-    private UserDetailsResponseDTO userDetailsResponse;
-    private UpdateUserRequestDTO updateRequest;
+    private CreateUserRequest createRequest;
+    private CreateUserResponse createResponse;
+    private UserResponse userResponse;
+    private UserDetailsResponse userDetailsResponse;
+    private UpdateUserRequest updateRequest;
 
     @BeforeEach
     void setUp() {
         userId = UUID.randomUUID();
         
-        createRequest = new CreateUserRequestDTO(
+        createRequest = new CreateUserRequest(
                 "John Doe",
                 "john.doe@example.com",
                 "password123",
                 ROLE_CUSTOMER.name()
         );
 
-        createResponse = new CreateUserResponseDTO(
+        createResponse = new CreateUserResponse(
                 userId,
                 "John Doe",
                 "john.doe@example.com",
                 "1990-01-01"
         );
 
-        userResponse = new UserResponseDTO(
+        userResponse = new UserResponse(
                 userId,
                 "John Doe"
         );
 
-        userDetailsResponse = new UserDetailsResponseDTO(
+        userDetailsResponse = new UserDetailsResponse(
                 userId,
                 "John Doe",
                 "john.doe@example.com",
                 LocalDate.of(1990, 1, 1).toString()
         );
 
-        updateRequest = new UpdateUserRequestDTO(
+        updateRequest = new UpdateUserRequest(
                 "John Updated",
                 "john.updated@example.com"
         );
@@ -87,10 +87,10 @@ class UserControllerTest {
     @Test
     void create_ShouldReturnCreatedUser() {
         // Arrange
-        when(createUserUseCase.execute(any(CreateUserRequestDTO.class))).thenReturn(createResponse);
+        when(createUserUseCase.execute(any(CreateUserRequest.class))).thenReturn(createResponse);
 
         // Act
-        ResponseEntity<CreateUserResponseDTO> response = userController.create(createRequest);
+        ResponseEntity<CreateUserResponse> response = userController.create(createRequest);
 
         // Assert
         assertNotNull(response);
@@ -102,11 +102,11 @@ class UserControllerTest {
     @Test
     void findAll_ShouldReturnListOfUsers() {
         // Arrange
-        List<UserResponseDTO> users = List.of(userResponse);
+        List<UserResponse> users = List.of(userResponse);
         when(listUsersUseCase.execute()).thenReturn(users);
 
         // Act
-        ResponseEntity<List<UserResponseDTO>> response = userController.findAll();
+        ResponseEntity<List<UserResponse>> response = userController.findAll();
 
         // Assert
         assertNotNull(response);
@@ -122,7 +122,7 @@ class UserControllerTest {
         when(getUserByIdUseCase.execute(userId)).thenReturn(userDetailsResponse);
 
         // Act
-        ResponseEntity<UserDetailsResponseDTO> response = userController.findById(userId);
+        ResponseEntity<UserDetailsResponse> response = userController.findById(userId);
 
         // Assert
         assertNotNull(response);
@@ -134,17 +134,17 @@ class UserControllerTest {
     @Test
     void update_ShouldReturnUpdatedUser() {
         // Arrange
-        when(updateUserUseCase.execute(eq(userId), any(UpdateUserRequestDTO.class)))
+        when(updateUserUseCase.execute(eq(userId), any(UpdateUserRequest.class)))
                 .thenReturn(userDetailsResponse);
 
         // Act
-        ResponseEntity<UserDetailsResponseDTO> response = userController.update(userId, updateRequest);
+        ResponseEntity<UserDetailsResponse> response = userController.update(userId, updateRequest);
 
         // Assert
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(userDetailsResponse, response.getBody());
-        verify(updateUserUseCase, times(1)).execute(eq(userId), any(UpdateUserRequestDTO.class));
+        verify(updateUserUseCase, times(1)).execute(eq(userId), any(UpdateUserRequest.class));
     }
 
     @Test

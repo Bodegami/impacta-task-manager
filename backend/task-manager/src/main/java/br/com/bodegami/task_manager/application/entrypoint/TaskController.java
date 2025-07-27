@@ -45,10 +45,10 @@ public class TaskController {
     }
 
     @PostMapping
-    public ResponseEntity<CreateTaskResponseDTO> create(
+    public ResponseEntity<CreateTaskResponse> create(
             @RequestHeader HttpHeaders httpHeaders,
-            @RequestBody CreateTaskRequestDTO request) {
-        CreateTaskResponseDTO response = createTaskUseCase.execute(request, httpHeaders);
+            @RequestBody CreateTaskRequest request) {
+        CreateTaskResponse response = createTaskUseCase.execute(request, httpHeaders);
         return ResponseEntity.ok(response);
     }
 
@@ -59,17 +59,17 @@ public class TaskController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<TaskResponseDTO>> findAllByParam(
+    public ResponseEntity<List<TaskResponse>> findAllByParam(
             @RequestHeader HttpHeaders httpHeaders,
             @RequestParam(required = false) Map<String, String> params) {
-        List<TaskResponseDTO> result = searchTasksUseCase.execute(httpHeaders, params);
+        List<TaskResponse> result = searchTasksUseCase.execute(httpHeaders, params);
         return ResponseEntity.ok(result);
     }
 
     @PutMapping("/{taskId}")
     public ResponseEntity<TaskDetailsResponse> updateTaskById(
             @PathVariable UUID taskId,
-            @RequestBody UpdateTaskRequestDTO request) {
+            @RequestBody UpdateTaskRequest request) {
         TaskDetailsResponse response = updateTaskUseCase.execute(taskId, request);
         return ResponseEntity.ok(response);
     }
@@ -81,23 +81,23 @@ public class TaskController {
     }
 
     @GetMapping
-    public ResponseEntity<List<TaskResponseDTO>> findAllTaskByUserId(
+    public ResponseEntity<List<TaskResponse>> findAllTaskByUserId(
             @RequestHeader HttpHeaders httpHeaders) {
-        List<TaskResponseDTO> response = getAllTasksUseCase.execute(httpHeaders);
+        List<TaskResponse> response = getAllTasksUseCase.execute(httpHeaders);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{taskId}/comments")
-    public ResponseEntity<List<TaskCommentResponseDTO>> getComments(@PathVariable UUID taskId) {
-        List<TaskCommentResponseDTO> comments = getTaskCommentsUseCase.execute(taskId);
+    public ResponseEntity<List<TaskCommentResponse>> getComments(@PathVariable UUID taskId) {
+        List<TaskCommentResponse> comments = getTaskCommentsUseCase.execute(taskId);
         return ResponseEntity.ok(comments);
     }
 
     @PostMapping("/comments")
-    public ResponseEntity<TaskCommentResponseDTO> addComment(
-            @RequestBody TaskCommentRequestDTO dto,
+    public ResponseEntity<TaskCommentResponse> addComment(
+            @RequestBody TaskCommentRequest dto,
             @RequestHeader HttpHeaders httpHeaders) {
-        TaskCommentResponseDTO response = addTaskCommentUseCase.execute(httpHeaders, dto);
+        TaskCommentResponse response = addTaskCommentUseCase.execute(httpHeaders, dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 }

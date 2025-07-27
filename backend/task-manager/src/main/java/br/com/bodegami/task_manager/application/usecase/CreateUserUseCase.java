@@ -1,8 +1,8 @@
 package br.com.bodegami.task_manager.application.usecase;
 
-import br.com.bodegami.task_manager.application.entrypoint.dto.CreateUserRequestDTO;
-import br.com.bodegami.task_manager.application.entrypoint.dto.CreateUserResponseDTO;
+import br.com.bodegami.task_manager.application.entrypoint.dto.CreateUserRequest;
+import br.com.bodegami.task_manager.application.entrypoint.dto.CreateUserResponse;
 
 public interface CreateUserUseCase {
-    CreateUserResponseDTO execute(CreateUserRequestDTO request);
+    CreateUserResponse execute(CreateUserRequest request);
 }

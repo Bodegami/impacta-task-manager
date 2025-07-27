@@ -1,6 +1,6 @@
 package br.com.bodegami.task_manager.application.entrypoint.dto;
 
-public record UpdateTaskRequestDTO(
+public record UpdateTaskRequest(
         String title,
         String description,
         String status,

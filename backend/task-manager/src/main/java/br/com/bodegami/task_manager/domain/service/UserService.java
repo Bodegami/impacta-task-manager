@@ -10,13 +10,13 @@ import java.util.UUID;
 
 public interface UserService {
 
-    CreateUserResponseDTO create(CreateUserRequestDTO requestDTO);
+    CreateUserResponse create(CreateUserRequest requestDTO);
 
-    List<UserResponseDTO> findAll();
+    List<UserResponse> findAll();
 
-    UserDetailsResponseDTO findById(UUID id);
+    UserDetailsResponse findById(UUID id);
 
-    UserDetailsResponseDTO update(UUID id, UpdateUserRequestDTO request);
+    UserDetailsResponse update(UUID id, UpdateUserRequest request);
 
     void delete(UUID id);
 

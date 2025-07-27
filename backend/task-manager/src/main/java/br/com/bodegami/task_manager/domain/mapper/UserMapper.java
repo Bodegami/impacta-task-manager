@@ -20,13 +20,13 @@ public interface UserMapper {
     @Mapping(target = "createdAt", expression = "java(java.time.LocalDateTime.now())")
     @Mapping(target = "roles", source = "request", qualifiedByName = "mapRoles")
     @Mapping(target = "password", source = "encodedPassword")
-    User toDomain(CreateUserRequestDTO request, String encodedPassword);
+    User toDomain(CreateUserRequest request, String encodedPassword);
 
-    CreateUserResponseDTO toCreateResponse(User user);
+    CreateUserResponse toCreateResponse(User user);
 
-    UserResponseDTO toUserResponse(User user);
+    UserResponse toUserResponse(User user);
 
-    UserDetailsResponseDTO toUserDetailsResponse(User user);
+    UserDetailsResponse toUserDetailsResponse(User user);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
@@ -34,10 +34,10 @@ public interface UserMapper {
     @Mapping(target = "roles", ignore = true)
     @Mapping(target = "user.email", source = "request.email")
     @Mapping(target = "user.name", source = "request.name")
-    User toUpdateDomain(@MappingTarget User user, UpdateUserRequestDTO request);
+    User toUpdateDomain(@MappingTarget User user, UpdateUserRequest request);
 
     @Named("mapRoles")
-    default List<Role> mapRoles(CreateUserRequestDTO request) {
+    default List<Role> mapRoles(CreateUserRequest request) {
         boolean isAdmin = request.role() != null && request.role().equalsIgnoreCase("ROLE_ADMINISTRATOR");
 
         Role role = (isAdmin) ? new Role(RoleName.ROLE_ADMINISTRATOR.getId(), RoleName.ROLE_ADMINISTRATOR):

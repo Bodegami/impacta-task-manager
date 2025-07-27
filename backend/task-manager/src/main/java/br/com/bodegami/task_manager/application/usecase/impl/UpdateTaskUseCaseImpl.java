@@ -1,7 +1,7 @@
 package br.com.bodegami.task_manager.application.usecase.impl;
 
 import br.com.bodegami.task_manager.application.entrypoint.dto.TaskDetailsResponse;
-import br.com.bodegami.task_manager.application.entrypoint.dto.UpdateTaskRequestDTO;
+import br.com.bodegami.task_manager.application.entrypoint.dto.UpdateTaskRequest;
 import br.com.bodegami.task_manager.application.usecase.UpdateTaskUseCase;
 import br.com.bodegami.task_manager.domain.service.TaskService;
 import org.springframework.stereotype.Component;
@@ -18,7 +18,7 @@ public class UpdateTaskUseCaseImpl implements UpdateTaskUseCase {
     }
 
     @Override
-    public TaskDetailsResponse execute(UUID taskId, UpdateTaskRequestDTO request) {
+    public TaskDetailsResponse execute(UUID taskId, UpdateTaskRequest request) {
         return taskService.updateTask(taskId, request);
     }
 }

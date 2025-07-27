@@ -22,12 +22,12 @@ public interface TaskMapper {
     @Mapping(target = "dueDate", source = "request.dueDate", qualifiedByName = "parseDueDate")
     @Mapping(target = "user.id", source = "userIdFromToken")
     @Mapping(target = "status", constant = BACKLOG)
-    Task toDomain(CreateTaskRequestDTO request, String userIdFromToken);
+    Task toDomain(CreateTaskRequest request, String userIdFromToken);
 
     @Mapping(source = "user.id", target = "userId")
-    CreateTaskResponseDTO toCreateResponse(Task task);
+    CreateTaskResponse toCreateResponse(Task task);
 
-    TaskResponseDTO toFindAllResponse(Task task);
+    TaskResponse toFindAllResponse(Task task);
 
     @Mapping(source = "user.id", target = "userId")
     TaskDetailsResponse toTaskDetailsResponse(Task task);
@@ -54,5 +54,5 @@ public interface TaskMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "user", ignore = true)
-    Task toUpdateDomain(@MappingTarget Task task, UpdateTaskRequestDTO request);
+    Task toUpdateDomain(@MappingTarget Task task, UpdateTaskRequest request);
 }

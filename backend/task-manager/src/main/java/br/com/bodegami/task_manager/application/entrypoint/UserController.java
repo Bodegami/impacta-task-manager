@@ -22,29 +22,29 @@ public class UserController {
     private final DeleteUserUseCase deleteUserUseCase;
 
     @PostMapping
-    public ResponseEntity<CreateUserResponseDTO> create(@RequestBody @Valid CreateUserRequestDTO request) {
-        CreateUserResponseDTO response = createUserUseCase.execute(request);
+    public ResponseEntity<CreateUserResponse> create(@RequestBody @Valid CreateUserRequest request) {
+        CreateUserResponse response = createUserUseCase.execute(request);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping
-    public ResponseEntity<List<UserResponseDTO>> findAll() {
-        List<UserResponseDTO> response = listUsersUseCase.execute();
+    public ResponseEntity<List<UserResponse>> findAll() {
+        List<UserResponse> response = listUsersUseCase.execute();
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserDetailsResponseDTO> findById(@PathVariable UUID id) {
-        UserDetailsResponseDTO response = getUserByIdUseCase.execute(id);
+    public ResponseEntity<UserDetailsResponse> findById(@PathVariable UUID id) {
+        UserDetailsResponse response = getUserByIdUseCase.execute(id);
         return ResponseEntity.ok(response);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserDetailsResponseDTO> update(
+    public ResponseEntity<UserDetailsResponse> update(
             @PathVariable UUID id,
-            @RequestBody @Valid UpdateUserRequestDTO request
+            @RequestBody @Valid UpdateUserRequest request
     ) {
-        UserDetailsResponseDTO response = updateUserUseCase.execute(id, request);
+        UserDetailsResponse response = updateUserUseCase.execute(id, request);
         return ResponseEntity.ok(response);
     }
 

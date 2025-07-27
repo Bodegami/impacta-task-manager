@@ -1,6 +1,6 @@
 package br.com.bodegami.task_manager.application.usecase.impl;
 
-import br.com.bodegami.task_manager.application.entrypoint.dto.UserResponseDTO;
+import br.com.bodegami.task_manager.application.entrypoint.dto.UserResponse;
 import br.com.bodegami.task_manager.application.usecase.ListUsersUseCase;
 import br.com.bodegami.task_manager.domain.service.UserService;
 import org.springframework.stereotype.Component;
@@ -17,7 +17,7 @@ public class ListUsersUseCaseImpl implements ListUsersUseCase {
     }
 
     @Override
-    public List<UserResponseDTO> execute() {
+    public List<UserResponse> execute() {
         return userService.findAll();
     }
 }

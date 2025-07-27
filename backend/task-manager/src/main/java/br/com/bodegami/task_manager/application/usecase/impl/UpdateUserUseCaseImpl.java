@@ -1,7 +1,7 @@
 package br.com.bodegami.task_manager.application.usecase.impl;
 
-import br.com.bodegami.task_manager.application.entrypoint.dto.UpdateUserRequestDTO;
-import br.com.bodegami.task_manager.application.entrypoint.dto.UserDetailsResponseDTO;
+import br.com.bodegami.task_manager.application.entrypoint.dto.UpdateUserRequest;
+import br.com.bodegami.task_manager.application.entrypoint.dto.UserDetailsResponse;
 import br.com.bodegami.task_manager.application.usecase.UpdateUserUseCase;
 import br.com.bodegami.task_manager.domain.service.UserService;
 import org.springframework.stereotype.Component;
@@ -18,7 +18,7 @@ public class UpdateUserUseCaseImpl implements UpdateUserUseCase {
     }
 
     @Override
-    public UserDetailsResponseDTO execute(UUID id, UpdateUserRequestDTO request) {
+    public UserDetailsResponse execute(UUID id, UpdateUserRequest request) {
         return userService.update(id, request);
     }
 }
