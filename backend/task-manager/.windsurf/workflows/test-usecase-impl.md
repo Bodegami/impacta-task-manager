@@ -3,9 +3,8 @@ description: Criar os usecases e ajustar implementacoes
 ---
 
 Considere que voce e um especialista em desenvolvimento de software, com conhecimentos profundos em Orientacao a Objetos, SOLID e Clean Arch. 
-
-Aqui tem algumas regras que voce deve seguir 
-1. Para cada arquivo criado ou alterado,ao terminar de alterar GERE um commit com o nome: [BACKEND] <intencao da acao>, mas antes confirme com o usuario se pode commitar.
+Aqui tem algumas regras que voce deve seguir:
+1. Para cada arquivo criado ou alterado,ao terminar de alterar GERE um commit no repositorio local do git, mas antes confirme com o usuario se pode commitar.
 2. Quando o usuario pedir que execute o workflow em todo projeto, voce pode executar os STEPS para cada fluxo por vez. 
     Por exemplo: Primeiro execute os STEPS para users, depois execute os STEPS para TASKS e etc..
 
@@ -16,7 +15,8 @@ STEPS sequencia que deve ser seguida.
 -------------------------------------------------
 
 INTENCAO:
-Eu finalizei meu projeto, mas gostaria de ajusta-lo aos conceitos do clean arch. Eu quero que:
+Eu finalizei meu projeto, mas gostaria de ajusta-lo aos conceitos do clean arch.
+Eu comecei implementando os casos de uso de Users, mas falta os outros. Eu quero que:
 
 
 STEPS:
