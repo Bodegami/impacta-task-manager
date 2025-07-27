@@ -1,43 +1,29 @@
 package br.com.bodegami.task_manager.application.usecase.impl;
 
-import br.com.bodegami.task_manager.domain.service.UserService;
+import br.com.bodegami.task_manager.application.usecase.BaseUseCaseTest;
 import br.com.bodegami.task_manager.security.LoginUserDTO;
 import br.com.bodegami.task_manager.security.RecoveryJwtTokenDTO;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class AuthenticateUserUseCaseImplTest {
-
-    @Mock
-    private UserService userService;
+class AuthenticateUserUseCaseImplTest extends BaseUseCaseTest {
 
     @InjectMocks
     private AuthenticateUserUseCaseImpl authenticateUserUseCase;
 
-    private LoginUserDTO loginUserDto;
-    private RecoveryJwtTokenDTO expectedToken;
-
-    @BeforeEach
-    void setUp() {
-        loginUserDto = new LoginUserDTO("test@example.com", "password123");
-        expectedToken = new RecoveryJwtTokenDTO("test-token");
-    }
+    private final LoginUserDTO loginUserDto = new LoginUserDTO("test@example.com", "password123");
+    private final RecoveryJwtTokenDTO expectedToken = new RecoveryJwtTokenDTO("test-token");
 
     @Test
     void execute_ShouldReturnToken_WhenAuthenticationIsSuccessful() {
         // Arrange
-        when(userService.authenticateUser(any(LoginUserDTO.class))).thenReturn(expectedToken);
+        when(userService.authenticateUser(loginUserDto)).thenReturn(expectedToken);
 
         // Act
         RecoveryJwtTokenDTO result = authenticateUserUseCase.execute(loginUserDto);
@@ -45,6 +31,7 @@ class AuthenticateUserUseCaseImplTest {
         // Assert
         assertNotNull(result);
         assertEquals(expectedToken.token(), result.token());
+        verify(userService, times(1)).authenticateUser(loginUserDto);
     }
 
     @Test
@@ -53,9 +40,11 @@ class AuthenticateUserUseCaseImplTest {
         when(userService.authenticateUser(loginUserDto)).thenReturn(expectedToken);
 
         // Act
-        authenticateUserUseCase.execute(loginUserDto);
+        RecoveryJwtTokenDTO result = authenticateUserUseCase.execute(loginUserDto);
 
         // Assert
-        verify(userService, Mockito.times(1)).authenticateUser(loginUserDto);
+        assertNotNull(result);
+        assertEquals(expectedToken.token(), result.token());
+        verify(userService, times(1)).authenticateUser(loginUserDto);
     }
 }

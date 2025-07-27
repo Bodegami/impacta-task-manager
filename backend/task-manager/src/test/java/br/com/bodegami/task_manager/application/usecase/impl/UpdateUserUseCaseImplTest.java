@@ -4,7 +4,6 @@ import br.com.bodegami.task_manager.application.entrypoint.dto.UpdateUserRequest
 import br.com.bodegami.task_manager.application.entrypoint.dto.UserDetailsResponseDTO;
 import br.com.bodegami.task_manager.application.usecase.BaseUseCaseTest;
 import br.com.bodegami.task_manager.domain.exception.UserNotFoundException;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 
@@ -19,26 +18,9 @@ class UpdateUserUseCaseImplTest extends BaseUseCaseTest {
     @InjectMocks
     private UpdateUserUseCaseImpl updateUserUseCase;
 
-    private UUID userId;
-    private UpdateUserRequestDTO updateRequest;
-    private UserDetailsResponseDTO updatedUser;
-
-    @BeforeEach
-    void setUp() {
-        userId = UUID.randomUUID();
-        
-        updateRequest = new UpdateUserRequestDTO(
-                "John Updated",
-                "john.updated@example.com"
-        );
-
-        updatedUser = new UserDetailsResponseDTO(
-                userId,
-                "John Updated",
-                "john.updated@example.com",
-                "1990-01-01"
-        );
-    }
+    private final UUID userId = UUID.randomUUID();
+    private final UpdateUserRequestDTO updateRequest = getUserRequestDTO();;
+    private final UserDetailsResponseDTO updatedUser = getUserDetailsResponseDTO();
 
     @Test
     void shouldUpdateUserSuccessfully() {
@@ -79,5 +61,21 @@ class UpdateUserUseCaseImplTest extends BaseUseCaseTest {
             () -> updateUserUseCase.execute(userId, null));
         
         verify(userService, times(1)).update(userId, null);
+    }
+
+    private UserDetailsResponseDTO getUserDetailsResponseDTO() {
+        return new UserDetailsResponseDTO(
+                userId,
+                "John Updated",
+                "john.updated@example.com",
+                "1990-01-01"
+        );
+    }
+
+    private UpdateUserRequestDTO getUserRequestDTO() {
+        return new UpdateUserRequestDTO(
+                "John Updated",
+                "john.updated@example.com"
+        );
     }
 }

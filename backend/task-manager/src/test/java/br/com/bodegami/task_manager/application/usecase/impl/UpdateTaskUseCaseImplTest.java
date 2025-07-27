@@ -2,12 +2,11 @@ package br.com.bodegami.task_manager.application.usecase.impl;
 
 import br.com.bodegami.task_manager.application.entrypoint.dto.TaskDetailsResponse;
 import br.com.bodegami.task_manager.application.entrypoint.dto.UpdateTaskRequestDTO;
-import br.com.bodegami.task_manager.domain.service.TaskService;
+import br.com.bodegami.task_manager.application.usecase.BaseUseCaseTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
@@ -17,10 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class UpdateTaskUseCaseImplTest {
-
-    @Mock
-    private TaskService taskService;
+class UpdateTaskUseCaseImplTest extends BaseUseCaseTest {
 
     @InjectMocks
     private UpdateTaskUseCaseImpl updateTaskUseCase;

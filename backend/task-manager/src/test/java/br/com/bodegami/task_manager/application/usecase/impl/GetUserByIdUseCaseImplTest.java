@@ -3,7 +3,6 @@ package br.com.bodegami.task_manager.application.usecase.impl;
 import br.com.bodegami.task_manager.application.entrypoint.dto.UserDetailsResponseDTO;
 import br.com.bodegami.task_manager.application.usecase.BaseUseCaseTest;
 import br.com.bodegami.task_manager.domain.exception.UserNotFoundException;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 
@@ -18,19 +17,8 @@ class GetUserByIdUseCaseImplTest extends BaseUseCaseTest {
     @InjectMocks
     private GetUserByIdUseCaseImpl getUserByIdUseCase;
 
-    private UUID userId;
-    private UserDetailsResponseDTO userDetails;
-
-    @BeforeEach
-    void setUp() {
-        userId = UUID.randomUUID();
-        userDetails = new UserDetailsResponseDTO(
-                userId,
-                "John Doe",
-                "john.doe@example.com",
-                "1990-01-01"
-        );
-    }
+    private final UUID userId = UUID.randomUUID();
+    private final UserDetailsResponseDTO userDetails = getUserDetailsResponseDTO();
 
     @Test
     void shouldGetUserByIdSuccessfully() {
@@ -57,5 +45,14 @@ class GetUserByIdUseCaseImplTest extends BaseUseCaseTest {
         // Act & Assert
         assertThrows(UserNotFoundException.class, () -> getUserByIdUseCase.execute(userId));
         verify(userService, times(1)).findById(userId);
+    }
+
+    private UserDetailsResponseDTO getUserDetailsResponseDTO() {
+        return new UserDetailsResponseDTO(
+                userId,
+                "John Doe",
+                "john.doe@example.com",
+                "1990-01-01"
+        );
     }
 }

@@ -1,11 +1,9 @@
 package br.com.bodegami.task_manager.application.usecase.impl;
 
-import br.com.bodegami.task_manager.domain.service.TaskService;
-import org.junit.jupiter.api.BeforeEach;
+import br.com.bodegami.task_manager.application.usecase.BaseUseCaseTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.UUID;
@@ -14,20 +12,12 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class DeleteTaskUseCaseImplTest {
-
-    @Mock
-    private TaskService taskService;
+class DeleteTaskUseCaseImplTest extends BaseUseCaseTest {
 
     @InjectMocks
     private DeleteTaskUseCaseImpl deleteTaskUseCase;
 
-    private UUID taskId;
-
-    @BeforeEach
-    void setUp() {
-        taskId = UUID.fromString("550e8400-e29b-41d4-a716-446655440001");
-    }
+    private final UUID taskId = UUID.fromString("550e8400-e29b-41d4-a716-446655440001");
 
     @Test
     void shouldDeleteTaskSuccessfully() {

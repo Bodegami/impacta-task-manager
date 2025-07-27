@@ -3,7 +3,6 @@ package br.com.bodegami.task_manager.application.usecase.impl;
 import br.com.bodegami.task_manager.application.entrypoint.dto.CreateUserRequestDTO;
 import br.com.bodegami.task_manager.application.entrypoint.dto.CreateUserResponseDTO;
 import br.com.bodegami.task_manager.application.usecase.BaseUseCaseTest;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 
@@ -19,25 +18,8 @@ class CreateUserUseCaseImplTest extends BaseUseCaseTest {
     @InjectMocks
     private CreateUserUseCaseImpl createUserUseCase;
 
-    private CreateUserRequestDTO requestDTO;
-    private CreateUserResponseDTO responseDTO;
-
-    @BeforeEach
-    void setUp() {
-        requestDTO = new CreateUserRequestDTO(
-                "John Doe",
-                "john.doe@example.com",
-                "password123",
-                ROLE_CUSTOMER.name()
-        );
-
-        responseDTO = new CreateUserResponseDTO(
-                UUID.randomUUID(),
-                "John Doe",
-                "john.doe@example.com",
-                ROLE_CUSTOMER.name()
-        );
-    }
+    private final CreateUserRequestDTO requestDTO = getUserRequestDTO();
+    private final CreateUserResponseDTO responseDTO = getUserResponseDTO();
 
     @Test
     void shouldCreateUserSuccessfully() {
@@ -64,5 +46,23 @@ class CreateUserUseCaseImplTest extends BaseUseCaseTest {
 
         assertThrows(NullPointerException.class, () -> createUserUseCase.execute(null));
         verify(userService, times(1)).create(null);
+    }
+
+    private CreateUserRequestDTO getUserRequestDTO() {
+        return new CreateUserRequestDTO(
+                "John Doe",
+                "john.doe@example.com",
+                "password123",
+                ROLE_CUSTOMER.name()
+        );
+    }
+
+    private CreateUserResponseDTO getUserResponseDTO() {
+        return new CreateUserResponseDTO(
+                UUID.randomUUID(),
+                "John Doe",
+                "john.doe@example.com",
+                ROLE_CUSTOMER.name()
+        );
     }
 }
