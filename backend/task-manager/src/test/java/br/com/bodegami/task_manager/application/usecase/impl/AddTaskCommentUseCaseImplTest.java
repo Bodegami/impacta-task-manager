@@ -2,87 +2,90 @@ package br.com.bodegami.task_manager.application.usecase.impl;
 
 import br.com.bodegami.task_manager.application.entrypoint.dto.TaskCommentRequestDTO;
 import br.com.bodegami.task_manager.application.entrypoint.dto.TaskCommentResponseDTO;
-import br.com.bodegami.task_manager.domain.service.TaskCommentService;
-import org.junit.jupiter.api.BeforeEach;
+import br.com.bodegami.task_manager.application.usecase.BaseUseCaseTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpHeaders;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class AddTaskCommentUseCaseImplTest {
-
-    @Mock
-    private TaskCommentService taskCommentService;
+class AddTaskCommentUseCaseImplTest extends BaseUseCaseTest {
 
     @InjectMocks
     private AddTaskCommentUseCaseImpl addTaskCommentUseCase;
 
-    private UUID userId;
-    private TaskCommentRequestDTO request;
-    private TaskCommentResponseDTO expectedResponse;
-
-    @BeforeEach
-    void setUp() {
-        userId = UUID.fromString("550e8400-e29b-41d4-a716-446655440000");
-        request = new TaskCommentRequestDTO("Test comment", UUID.randomUUID().toString());
-        expectedResponse = new TaskCommentResponseDTO(
-            UUID.randomUUID(),
-            "Test comment",
-            "test@example.com",
-            LocalDateTime.now()
-        );
-    }
+    private final UUID userId = UUID.fromString("550e8400-e29b-41d4-a716-446655440000");
+    private final TaskCommentRequestDTO request = new TaskCommentRequestDTO("Test comment", UUID.randomUUID().toString());
+    private final TaskCommentResponseDTO expectedResponse = getTaskCommentResponseDTO();
+    private final HttpHeaders httpHeaders = mock(HttpHeaders.class);
 
     @Test
     void shouldAddCommentSuccessfully() {
-        when(taskCommentService.addComment(any(UUID.class), any(TaskCommentRequestDTO.class)))
-            .thenReturn(expectedResponse);
+        when(userService.getUserIdFromToken(httpHeaders)).thenReturn(userId.toString());
+        when(taskCommentService.addComment(userId, request)).thenReturn(expectedResponse);
 
-        TaskCommentResponseDTO result = addTaskCommentUseCase.execute(userId, request);
+        TaskCommentResponseDTO result = addTaskCommentUseCase.execute(httpHeaders, request);
 
         assertNotNull(result);
         assertEquals(expectedResponse.id(), result.id());
         assertEquals(expectedResponse.comment(), result.comment());
+        verify(userService, times(1)).getUserIdFromToken(httpHeaders);
         verify(taskCommentService, times(1)).addComment(userId, request);
     }
 
     @Test
     void shouldHandleNullUserId() {
-        doThrow(NullPointerException.class).when(taskCommentService).addComment(null, request);
+        when(userService.getUserIdFromToken(null))
+                .thenThrow(new RuntimeException("Token with invalid user_id"));
 
-        assertThrows(NullPointerException.class,
-            () -> addTaskCommentUseCase.execute(null, request));
+        RuntimeException result = assertThrows(RuntimeException.class,
+                () -> addTaskCommentUseCase.execute(null, request));
 
-        verify(taskCommentService, times(1)).addComment(null, request);
+        assertEquals("Token with invalid user_id", result.getMessage());
+        verify(userService, times(1)).getUserIdFromToken(null);
+        verify(taskCommentService, never()).addComment(null, request);
     }
 
     @Test
     void shouldHandleNullRequest() {
-        doThrow(NullPointerException.class).when(taskCommentService).addComment(userId, null);
+        when(userService.getUserIdFromToken(httpHeaders)).thenReturn(userId.toString());
+        when(taskCommentService.addComment(userId, null))
+                .thenThrow(new RuntimeException("Payload invalido"));
 
-        assertThrows(NullPointerException.class,
-            () -> addTaskCommentUseCase.execute(userId, null));
+        RuntimeException result = assertThrows(RuntimeException.class,
+                () -> addTaskCommentUseCase.execute(httpHeaders, null));
 
+        assertEquals("Payload invalido", result.getMessage());
+        verify(userService, times(1)).getUserIdFromToken(httpHeaders);
         verify(taskCommentService, times(1)).addComment(userId, null);
     }
 
     @Test
     void shouldHandleServiceException() {
-        when(taskCommentService.addComment(any(UUID.class), any(TaskCommentRequestDTO.class)))
-            .thenThrow(new RuntimeException("Service error"));
+        when(userService.getUserIdFromToken(httpHeaders)).thenReturn(userId.toString());
+        when(taskCommentService.addComment(userId, request))
+            .thenThrow(new RuntimeException("Tarefa não encontrada"));
 
         assertThrows(RuntimeException.class,
-            () -> addTaskCommentUseCase.execute(userId, request));
+            () -> addTaskCommentUseCase.execute(httpHeaders, request));
 
+        verify(userService, times(1)).getUserIdFromToken(httpHeaders);
         verify(taskCommentService, times(1)).addComment(userId, request);
+    }
+
+    private TaskCommentResponseDTO getTaskCommentResponseDTO() {
+        return new TaskCommentResponseDTO(
+                UUID.randomUUID(),
+                "Test comment",
+                "test@example.com",
+                LocalDateTime.now()
+        );
     }
 }

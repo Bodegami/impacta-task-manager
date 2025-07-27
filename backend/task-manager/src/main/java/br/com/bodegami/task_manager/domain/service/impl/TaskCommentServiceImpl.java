@@ -38,6 +38,9 @@ public class TaskCommentServiceImpl implements TaskCommentService {
     }
 
     public TaskCommentResponseDTO addComment(UUID userId, TaskCommentRequestDTO dto) {
+        if (dto == null) {
+            throw new RuntimeException("Payload invalido");
+        }
         Task task = taskRepo.findById(UUID.fromString(dto.taskId()))
                 .orElseThrow(() -> new RuntimeException("Tarefa não encontrada"));
         User user = userRepo.findById(task.getUser().getId())

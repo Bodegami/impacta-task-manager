@@ -197,8 +197,7 @@ class TaskControllerTest {
                 LocalDateTime.now()
         );
 
-        when(userService.getUserIdFromToken(httpHeaders)).thenReturn(userId);
-        when(addTaskCommentUseCase.execute(any(UUID.class), any())).thenReturn(expectedResponse);
+        when(addTaskCommentUseCase.execute(httpHeaders, request)).thenReturn(expectedResponse);
 
         // Act
         ResponseEntity<TaskCommentResponseDTO> result = taskController.addComment(request, httpHeaders);
@@ -207,6 +206,6 @@ class TaskControllerTest {
         assertNotNull(result);
         assertEquals(HttpStatus.CREATED, result.getStatusCode());
         assertEquals(expectedResponse, result.getBody());
-        verify(addTaskCommentUseCase).execute(UUID.fromString(userId), request);
+        verify(addTaskCommentUseCase).execute(httpHeaders, request);
     }
 }

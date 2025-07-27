@@ -2,7 +2,6 @@ package br.com.bodegami.task_manager.application.entrypoint;
 
 import br.com.bodegami.task_manager.application.entrypoint.dto.*;
 import br.com.bodegami.task_manager.application.usecase.*;
-import br.com.bodegami.task_manager.domain.service.UserService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +24,6 @@ public class TaskController {
     private final GetAllTasksUseCase getAllTasksUseCase;
     private final GetTaskCommentsUseCase getTaskCommentsUseCase;
     private final AddTaskCommentUseCase addTaskCommentUseCase;
-    private final UserService userService;
 
     public TaskController(
             CreateTaskUseCase createTaskUseCase,
@@ -35,8 +33,7 @@ public class TaskController {
             DeleteTaskUseCase deleteTaskUseCase,
             GetAllTasksUseCase getAllTasksUseCase,
             GetTaskCommentsUseCase getTaskCommentsUseCase,
-            AddTaskCommentUseCase addTaskCommentUseCase,
-            UserService userService) {
+            AddTaskCommentUseCase addTaskCommentUseCase) {
         this.createTaskUseCase = createTaskUseCase;
         this.getTaskByIdUseCase = getTaskByIdUseCase;
         this.searchTasksUseCase = searchTasksUseCase;
@@ -45,7 +42,6 @@ public class TaskController {
         this.getAllTasksUseCase = getAllTasksUseCase;
         this.getTaskCommentsUseCase = getTaskCommentsUseCase;
         this.addTaskCommentUseCase = addTaskCommentUseCase;
-        this.userService = userService;
     }
 
     @PostMapping
@@ -101,9 +97,7 @@ public class TaskController {
     public ResponseEntity<TaskCommentResponseDTO> addComment(
             @RequestBody TaskCommentRequestDTO dto,
             @RequestHeader HttpHeaders httpHeaders) {
-        String userId = userService.getUserIdFromToken(httpHeaders);
-        TaskCommentResponseDTO response = addTaskCommentUseCase.execute(
-                UUID.fromString(userId), dto);
+        TaskCommentResponseDTO response = addTaskCommentUseCase.execute(httpHeaders, dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 }

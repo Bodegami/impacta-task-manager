@@ -1,5 +1,6 @@
 package br.com.bodegami.task_manager.application.usecase;
 
+import br.com.bodegami.task_manager.domain.service.TaskCommentService;
 import br.com.bodegami.task_manager.domain.service.TaskService;
 import br.com.bodegami.task_manager.domain.service.UserService;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,5 +16,8 @@ public abstract class BaseUseCaseTest {
 
     @Mock
     protected TaskService taskService;
+
+    @Mock
+    protected TaskCommentService taskCommentService;
     
 }
