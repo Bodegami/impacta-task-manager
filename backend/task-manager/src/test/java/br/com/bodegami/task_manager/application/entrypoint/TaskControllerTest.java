@@ -62,7 +62,7 @@ class TaskControllerTest {
         var request = new CreateTaskRequestDTO("Test Task", "Description", "PENDING");
         var response = new CreateTaskResponseDTO(taskId, "Test Task", "Description", "PENDING",
                 UUID.fromString(userId), null, null);
-        
+
         when(createTaskUseCase.execute(request, httpHeaders)).thenReturn(response);
 
         // Act
@@ -100,9 +100,8 @@ class TaskControllerTest {
         List<TaskResponseDTO> expectedTasks = List.of(
                 new TaskResponseDTO(taskId, "Task 1", "PENDING")
         );
-
-        when(userService.getUserIdFromToken(httpHeaders)).thenReturn(userId);
-        when(searchTasksUseCase.execute(userId, params)).thenReturn(expectedTasks);
+        
+        when(searchTasksUseCase.execute(httpHeaders, params)).thenReturn(expectedTasks);
 
         // Act
         ResponseEntity<List<TaskResponseDTO>> result = taskController.findAllByParam(httpHeaders, params);
@@ -111,7 +110,7 @@ class TaskControllerTest {
         assertNotNull(result);
         assertEquals(HttpStatus.OK, result.getStatusCode());
         assertEquals(expectedTasks, result.getBody());
-        verify(searchTasksUseCase).execute(userId, params);
+        verify(searchTasksUseCase).execute(httpHeaders, params);
     }
 
     @Test

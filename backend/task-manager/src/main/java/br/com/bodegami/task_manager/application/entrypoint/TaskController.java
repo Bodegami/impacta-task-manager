@@ -66,8 +66,7 @@ public class TaskController {
     public ResponseEntity<List<TaskResponseDTO>> findAllByParam(
             @RequestHeader HttpHeaders httpHeaders,
             @RequestParam(required = false) Map<String, String> params) {
-        String userId = userService.getUserIdFromToken(httpHeaders);
-        List<TaskResponseDTO> result = searchTasksUseCase.execute(userId, params);
+        List<TaskResponseDTO> result = searchTasksUseCase.execute(httpHeaders, params);
         return ResponseEntity.ok(result);
     }
 
