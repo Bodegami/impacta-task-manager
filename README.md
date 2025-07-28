@@ -77,6 +77,7 @@ cd backend
 cd frontend
 npm install
 npm start
+npm run dev
 ```
 
 ## 🐛 Testes

@@ -1,5 +1,6 @@
 package br.com.bodegami.task_manager.application.usecase;
 
+import br.com.bodegami.task_manager.domain.mapper.TaskMapper;
 import br.com.bodegami.task_manager.domain.service.TaskCommentService;
 import br.com.bodegami.task_manager.domain.service.TaskService;
 import br.com.bodegami.task_manager.domain.service.UserService;
@@ -19,5 +20,8 @@ public abstract class BaseUseCaseTest {
 
     @Mock
     protected TaskCommentService taskCommentService;
+
+    @Mock
+    protected TaskMapper taskMapper;
     
 }

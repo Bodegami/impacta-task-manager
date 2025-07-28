@@ -3,6 +3,7 @@ package br.com.bodegami.task_manager.domain.service.impl;
 import br.com.bodegami.task_manager.application.entrypoint.dto.*;
 import br.com.bodegami.task_manager.domain.entity.Task;
 import br.com.bodegami.task_manager.domain.entity.TaskSearchParam;
+import br.com.bodegami.task_manager.domain.exception.DatabaseException;
 import br.com.bodegami.task_manager.domain.mapper.TaskMapper;
 import br.com.bodegami.task_manager.domain.service.TaskService;
 import br.com.bodegami.task_manager.infrastructure.repository.TaskRepository;
@@ -23,26 +24,20 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Transactional
-    public CreateTaskResponse create(CreateTaskRequest request, String userId) {
-
-        Task entity = mapper.toDomain(request, userId);
-
-        Task result = repository.save(entity);
-
-        CreateTaskResponse response = mapper.toCreateResponse(result);
-
-        return response;
+    public Task create(Task entity, String userId) {
+        try {
+            return repository.save(entity);
+        } catch (Exception e) {
+            throw new DatabaseException("Fail to save task", e);
+        }
     }
 
     @Transactional(readOnly = true)
     public List<TaskResponse> findAllByUserId(UUID userId) {
-
-        List<TaskResponse> result = repository.findAllByUserId(userId)
+        return repository.findAllByUserId(userId)
                 .stream()
                 .map(mapper::toFindAllResponse)
                 .toList();
-
-        return result;
     }
 
     @Transactional(readOnly = true)
